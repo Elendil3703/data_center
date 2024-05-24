@@ -33,7 +33,7 @@ public class DataBaseService {
     }
     public void deleteTable(String tableName) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
         // 删除表格
         dataBaseMapper.deleteTable(tableName);
@@ -46,10 +46,10 @@ public class DataBaseService {
     }
     public void removeField(String tableName, String columnName) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
         if (dataBaseMapper.columnExists(tableName, columnName) == 0) {
-            throw new BadRequestException("Column " + columnName + " does not exist in table " + tableName);
+            throw new IllegalArgumentException("Column " + columnName + " does not exist in table " + tableName);
         }
         dataBaseMapper.removeField(tableName, columnName);
     }
@@ -60,34 +60,34 @@ public class DataBaseService {
 
     public List<Map<String, Object>> getTableInfo(String tableName) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
         return dataBaseMapper.getTableInfo(tableName);
     }
     public List<Map<String, Object>> getTableData(String tableName) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
         return dataBaseMapper.getTableData(tableName);
     }
     public void updateTableField(String tableName, String columnName, String columnValue, String primaryKey, String primaryKeyValue) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
         if (dataBaseMapper.columnExists(tableName, columnName) == 0) {
-            throw new BadRequestException("Column " + columnName + " does not exist in table " + tableName);
+            throw new IllegalArgumentException("Column " + columnName + " does not exist in table " + tableName);
         }
         dataBaseMapper.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
     }
 
     public void updateTableData(String tableName, List<Map<String, Object>> dataToUpdate) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
-            throw new BadRequestException("Table " + tableName + " does not exist");
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
         }
 
         for (Map<String, Object> row : dataToUpdate) {
             if (row.isEmpty()) {
-                throw new BadRequestException("Empty data row provided");
+                throw new IllegalArgumentException("Empty data row provided");
             }
 
             // 假设每行的第一个键值对是主键
@@ -103,7 +103,7 @@ public class DataBaseService {
                 String columnValue = entry.getValue().toString();
 
                 if (dataBaseMapper.columnExists(tableName, columnName) == 0) {
-                    throw new BadRequestException("Column " + columnName + " does not exist in table " + tableName);
+                    throw new IllegalArgumentException("Column " + columnName + " does not exist in table " + tableName);
                 }
 
                 dataBaseMapper.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);

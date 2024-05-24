@@ -47,7 +47,7 @@ public class DataBaseController {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
     }
 
-    @PostMapping("/update_data")
+    @PostMapping("/update_data")//改动数据（新）
     public void updateTableData(@RequestBody Map<String, Object> requestData) {
             String tableName = requestData.get("name").toString();
             List<Map<String, Object>> dataToUpdate = (List<Map<String, Object>>) requestData.get("fields");
