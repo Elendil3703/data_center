@@ -17,7 +17,7 @@ public class DataBaseController {
     public void createTable(@RequestBody CreateTableRequest request) {
         dataBaseService.createTable(request);
     }
-    @DeleteMapping("/delete_table")
+    @PostMapping("/delete_table")
     public void deleteTable(@RequestParam String name) {
         dataBaseService.deleteTable(name);
     }
@@ -25,7 +25,7 @@ public class DataBaseController {
     public void addField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnType) {
         dataBaseService.addField(tableName, columnName, columnType);
     }
-    @DeleteMapping("/remove_field")
+    @PostMapping("/remove_field")
     public void removeField(@RequestParam String tableName, @RequestParam String columnName) {
         dataBaseService.removeField(tableName, columnName);
     }
@@ -42,8 +42,16 @@ public class DataBaseController {
     public List<Map<String, Object>> getTableData(@RequestParam String tableName) {
         return dataBaseService.getTableData(tableName);
     }
-    @PutMapping("/update_field")
+    @PostMapping("/update_field")
     public void updateTableField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnValue, @RequestParam String primaryKey, @RequestParam String primaryKeyValue) {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
     }
+
+    @PostMapping("/update_data")
+    public void updateTableData(@RequestBody Map<String, Object> requestData) {
+            String tableName = requestData.get("name").toString();
+            List<Map<String, Object>> dataToUpdate = (List<Map<String, Object>>) requestData.get("fields");
+            dataBaseService.updateTableData(tableName, dataToUpdate);
+    }
+
 }

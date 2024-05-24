@@ -30,7 +30,7 @@ public class PermissionController {
         permissionService.updatePermission(name, password, readable, writable);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public void deleteUser(@RequestParam String name) {
         permissionService.deleteUser(name);
     }

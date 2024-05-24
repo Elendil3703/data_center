@@ -79,4 +79,36 @@ public class DataBaseService {
         }
         dataBaseMapper.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
     }
+
+    public void updateTableData(String tableName, List<Map<String, Object>> dataToUpdate) {
+        if (dataBaseMapper.tableExists(tableName) == 0) {
+            throw new BadRequestException("Table " + tableName + " does not exist");
+        }
+
+        for (Map<String, Object> row : dataToUpdate) {
+            if (row.isEmpty()) {
+                throw new BadRequestException("Empty data row provided");
+            }
+
+            // 假设每行的第一个键值对是主键
+            Map.Entry<String, Object> primaryKeyEntry = row.entrySet().iterator().next();
+            String primaryKey = primaryKeyEntry.getKey();
+            String primaryKeyValue = primaryKeyEntry.getValue().toString();
+
+            // 从更新数据中移除主键
+            row.remove(primaryKey);
+
+            for (Map.Entry<String, Object> entry : row.entrySet()) {
+                String columnName = entry.getKey();
+                String columnValue = entry.getValue().toString();
+
+                if (dataBaseMapper.columnExists(tableName, columnName) == 0) {
+                    throw new BadRequestException("Column " + columnName + " does not exist in table " + tableName);
+                }
+
+                dataBaseMapper.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
+            }
+        }
+    }
+
 }
