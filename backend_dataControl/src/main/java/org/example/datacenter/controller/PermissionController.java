@@ -22,17 +22,19 @@ public class PermissionController {
         permissionService.setPermission(name, password, readable, writable);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public void updatePermission(@RequestParam String name,
                                  @RequestParam String password,
                                  @RequestParam String readable,
-                                 @RequestParam String writable) {
-        permissionService.updatePermission(name, password, readable, writable);
+                                 @RequestParam String writable,
+                                 @RequestParam String adminName,
+                                 @RequestParam String adminPassword) {
+        permissionService.updatePermission(name, password, readable, writable, adminName, adminPassword);
     }
 
     @PostMapping("/delete")
-    public void deleteUser(@RequestParam String name) {
-        permissionService.deleteUser(name);
+    public void deleteUser(@RequestParam String name, @RequestParam String adminName, @RequestParam String adminPassword) {
+        permissionService.deleteUser(name, adminName, adminPassword);
     }
 
     @GetMapping("/show")

@@ -18,4 +18,5 @@ public interface PermissionMapper {
     Integer countUserInAdmin(@Param("name") String name);
     Integer countUserInMySQL(@Param("name") String name);
     List<Admin> getAdmins(@Param("offset") int offset, @Param("limit") int limit);
+    String getPasswordByName(@Param("name") String name);
 }

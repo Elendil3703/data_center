@@ -50,4 +50,7 @@
                  LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <select id="getPasswordByName" resultType="string">
+        SELECT password FROM DataCenterAdmin WHERE name = #{name};
+    </select>
 </mapper>

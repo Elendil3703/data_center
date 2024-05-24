@@ -69,11 +69,14 @@ public class PermissionService {
         }
     }
 
-    public void updatePermission(String name, String password, String readable, String writable) {
+    public void updatePermission(String name, String password, String readable, String writable, String adminName, String adminPassword) {
         try {
             // 检查用户是否存在于admin表和MySQL user表中
             if (permissionMapper.countUserInAdmin(name) == 0 || permissionMapper.countUserInMySQL(name) == 0) {
                 throw new IllegalArgumentException("User does not exist in admin table or MySQL user table.");
+            }
+            if(!adminPassword.equals(permissionMapper.getPasswordByName(adminName))) {
+                throw new IllegalArgumentException("Admin password is incorrect.");
             }
             // 删除admin表中的用户
             permissionMapper.deletePermission(name);
@@ -125,11 +128,14 @@ public class PermissionService {
         }
     }
 
-    public void deleteUser(String name) {
+    public void deleteUser(String name, String adminName, String adminPassword) {
         try {
             // 检查用户是否存在于admin表和MySQL user表中
             if (permissionMapper.countUserInAdmin(name) == 0 || permissionMapper.countUserInMySQL(name) == 0) {
                 throw new IllegalArgumentException("User does not exist in admin table or MySQL user table.");
+            }
+            if(!adminPassword.equals(permissionMapper.getPasswordByName(adminName))) {
+                throw new IllegalArgumentException("Admin password is incorrect.");
             }
 
             // 删除admin表中的用户
