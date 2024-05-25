@@ -1,0 +1,56 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.datacenter.mapper.PermissionMapper">
+
+    <insert id="insertPermission">
+        INSERT INTO admin (name, password, readable, writable) VALUES (#{name}, #{password}, #{readable}, #{writable});
+    </insert>
+
+    <delete id="deletePermission">
+        DELETE FROM admin WHERE name=#{name};
+    </delete>
+
+    <delete id="dropUser">
+        DROP USER IF EXISTS #{name}@'localhost';
+    </delete>
+
+    <insert id="createUser">
+        CREATE USER '${name}'@'localhost' IDENTIFIED BY '${password}';
+    </insert>
+
+    <insert id="grantSelectPermission">
+        GRANT SELECT ON ${tableName} TO '${userName}'@'localhost';
+    </insert>
+
+    <insert id="grantInsertUpdatePermission">
+        GRANT INSERT, UPDATE ON ${tableName} TO '${userName}'@'localhost';
+    </insert>
+
+    <select id="getIdsWithPermissionZero" resultType="int">
+        SELECT id FROM table_permissions WHERE permission = 0;
+    </select>
+
+    <select id="getTableNamesByIds" resultType="string">
+        SELECT name FROM table_permissions WHERE id IN
+        <foreach item="id" index="index" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="countUserInAdmin" resultType="int">
+        SELECT COUNT(*) FROM admin WHERE name = #{name};
+    </select>
+
+    <select id="countUserInMySQL" resultType="int">
+        SELECT COUNT(*) FROM mysql.user WHERE User = #{name} AND Host = 'localhost';
+    </select>
+
+    <select id="getAdmins" resultType="org.example.datacenter.model.Admin">
+        SELECT adminID, name, readable, writable, password
+        FROM admin
+                 LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="getPasswordByName" resultType="string">
+        SELECT password FROM DataCenterAdmin WHERE name = #{name};
+    </select>
+</mapper>
