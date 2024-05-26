@@ -38,7 +38,7 @@ public class PermissionController {
     }
 
     @GetMapping("/show")
-    public List<Admin> getAdmins(@RequestParam int page, @RequestParam int size) {
-        return permissionService.getAdmins(page, size);
+    public List<Admin> getAdmins() {
+        return permissionService.getAdmins();
     }
 }

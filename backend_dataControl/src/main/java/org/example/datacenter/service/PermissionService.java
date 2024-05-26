@@ -148,8 +148,7 @@ public class PermissionService {
         }
     }
 
-    public List<Admin> getAdmins(int page, int size) {
-        int offset = (page - 1) * size;
-        return permissionMapper.getAdmins(offset, size);
+    public List<Admin> getAdmins() {
+        return permissionMapper.getAdmins();
     }
 }
