@@ -14,6 +14,7 @@ import EditAuthor from '@/Page/EditAuthor.vue';
 import AddAuthor from '@/Page/AddAuthor.vue';
 import DeleteAuthor from '@/Page/DeleteAuthor.vue';
 import EditTable from '@/Page/EditTable.vue';
+import LoginRoot from '@/Page/LoginRoot.vue';
 import store from '@/store';
 Vue.use(VueRouter);
 
@@ -21,6 +22,10 @@ const routes = [
   {
     path: '/home',
     component: DataQuery,
+  },
+  {
+    path: '/',
+    component:LoginRoot
   },
   {
     path: '/route-one',
