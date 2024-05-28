@@ -22,6 +22,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 
 }
 
