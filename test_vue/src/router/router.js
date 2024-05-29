@@ -15,17 +15,18 @@ import AddAuthor from '@/Page/AddAuthor.vue';
 import DeleteAuthor from '@/Page/DeleteAuthor.vue';
 import EditTable from '@/Page/EditTable.vue';
 import LoginRoot from '@/Page/LoginRoot.vue';
-import store from '@/store';
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/home',
     component: DataQuery,
+    meta: { requiresAuth: true }
   },
   {
     path: '/',
-    component:LoginRoot
+    name:'Login',
+    component:LoginRoot,
   },
   {
     path: '/route-one',
@@ -48,11 +49,12 @@ const routes = [
   {
     path: '/route-four',
     name: 'ApiManage',
-    component: ApiManage
+    component: ApiManage,
   },
   {
     path: '/route-five',
     component: SqlManage,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -87,6 +89,7 @@ const routes = [
   {
     path: '/route-six',
     component: AuthorManage,
+    meta: { requiresAuth: true },
     children: [
       {
         path: '',
@@ -126,11 +129,19 @@ const router = new VueRouter({
   routes
 });
 router.beforeEach((to, from, next) => {
-    // 假设路由元信息包含了应该激活的菜单项索引
-    if (to.meta.activeIndex) {
-      store.dispatch('updateActiveIndex', to.meta.activeIndex);
+  const isAuthenticated = !!localStorage.getItem('jwt');
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      if (to.name !== 'Login') {
+        next({ name: 'Login' });
+      } else {
+        next();
+      }
+    } else {
+      next();
     }
+  } else {
     next();
-  });
-  
+  }
+});
 export default router;
