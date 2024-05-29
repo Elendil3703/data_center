@@ -8,4 +8,7 @@ import org.example.datacenter.model.DataCenterAdmin;
 public interface DataCenterAdminMapper {
 
     DataCenterAdmin findByName(String name);
+    int checkUserExistence(String name);
+
+    DataCenterAdmin getById(Integer integer);
 }

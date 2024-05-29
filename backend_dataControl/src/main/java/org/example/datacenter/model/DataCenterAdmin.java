@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Data
 public class DataCenterAdmin {
+    private int id;
     private String name;
     private String password;
 }
