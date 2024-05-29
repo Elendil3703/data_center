@@ -4,7 +4,7 @@
       <form @submit.prevent="login">
         <div>
           <label for="username" style="margin-right:10px;">Username</label>
-          <input type="text" id="username" v-model="username" required />
+          <input type="text" id="username" v-model="name" required />
         </div>
         <div>
           <label for="password" style="margin-right:10px;">Password</label>
@@ -20,27 +20,35 @@
     name: 'LoginRoot',
     data() {
       return {
-        username: '',
+        name: '',
         password: ''
       };
     },
     methods: {
       async login() {
         try {
-          const response = await this.$axios.post('/login', {
-            username: this.username,
-            password: this.password
-          });
-          const token = response.data.jwt;
-          // Store the token in local storage
-          localStorage.setItem('jwt', token);
-          // Set the Authorization header for future requests
-          this.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          // Redirect to the DataQuery component
-          this.$router.push({ name: 'DataQuery' });
-        } catch (error) {
-          console.error('Login failed', error);
-        }
+  const response = await this.$axios.post('/login', {
+    username: this.name,
+    password: this.password
+  });
+  const token = response.data.data.token;
+  // Store the token in local storage
+  localStorage.setItem('jwt', token);
+  // Set the Authorization header for future requests
+  this.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  // Redirect to the DataQuery component
+  this.$router.push({ name: 'DataQuery' });
+} catch (error) {
+  if (error.response && error.response.status === 400) {
+    // 提示特定的错误信息
+    console.error('Login failed:', error.response.data.msg);
+    alert(`Login failed: ${error.response.data.msg}`);
+  } else {
+    // 处理其他错误
+    console.error('Login failed:', error);
+  }
+}
+
       }
     }
   };
