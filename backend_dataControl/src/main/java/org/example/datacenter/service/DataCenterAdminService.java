@@ -16,4 +16,11 @@ public class DataCenterAdminService {
     public DataCenterAdmin getById(Integer integer) {
         return dataCenterAdminMapper.getById(integer);
     }
+    public boolean varifyPassword(DataCenterAdmin dataCenterAdmin) {
+        if(dataCenterAdminMapper.findByName(dataCenterAdmin.getName()).getPassword()==dataCenterAdmin.getPassword()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

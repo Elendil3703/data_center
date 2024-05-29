@@ -21,6 +21,9 @@ public class LoginController {
             throw new IllegalArgumentException("没有该用户");
 
         }
+        if(!dataCenterAdminService.varifyPassword(datacenteradmin)){
+            throw new IllegalArgumentException("密码错误");
+        }
         UserVo userVo = new UserVo();
         userVo.setUsername(datacenteradmin.getName());
         String token = JWTUtils.getToken(String.valueOf(datacenteradmin.getId()), datacenteradmin.getPassword());
