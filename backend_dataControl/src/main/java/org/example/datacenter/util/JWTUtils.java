@@ -38,23 +38,6 @@ public class JWTUtils {
                 .sign(Algorithm.HMAC256(password)); // 以 password 作为 token 的密钥
     }
 
-    /**
-     * 获取当前登录的用户信息
-     *
-     * @return user对象
-     */
-    public static DataCenterAdmin getCurrentUser() {
-        try {
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            String token = request.getHeader("token");
-            if (StringUtils.isNotBlank(token)) {
-                String userId = JWT.decode(token).getAudience().get(0);
-                return staticDataCenterAdminService.getById(Integer.valueOf(userId));
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return null;
-    }
+
 }
 

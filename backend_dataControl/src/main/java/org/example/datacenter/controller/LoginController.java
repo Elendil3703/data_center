@@ -26,7 +26,7 @@ public class LoginController {
         }
         UserVo userVo = new UserVo();
         userVo.setUsername(datacenteradmin.getName());
-        String token = JWTUtils.getToken(String.valueOf(datacenteradmin.getId()), datacenteradmin.getPassword());
+        String token = JWTUtils.getToken(String.valueOf(datacenteradmin.getName()), datacenteradmin.getPassword());
         userVo.setToken(token);
         return R.ok("登录成功").setData(userVo);
     }
