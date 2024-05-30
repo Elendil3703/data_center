@@ -18,7 +18,7 @@
       </div>
       <div class="button-group">
         <el-button type="primary" @click="confirm">确认</el-button>
-        <el-button @click="clearFields">取消</el-button>
+        <el-button @click="clearFields">返回</el-button>
       </div>
     </div>
   </template>
@@ -60,6 +60,7 @@ export default {
         .then(response => {
           console.log('修改成功:', response.data);
           this.$message.success('修改成功');
+          this.updateTableData();
         })
         .catch(error => {
           console.error('修改失败:', error);
@@ -67,11 +68,16 @@ export default {
         });
     },
     clearFields() {
-      this.editForm.readable = '';
-      this.editForm.writable = '';
-      this.authForm.username = '';
-      this.authForm.password = '';
-    }
+      this.$router.push({ name: 'CheckAuthor' });
+    },
+    updateTableData() {
+      // 假设你只有一个管理员数据需要更新
+      const admin = this.adminDataArray[0];
+      if (admin) {
+        admin.readable = this.editForm.readable;
+        admin.writable = this.editForm.writable;
+      }
+    },
   }
 };
 </script>

@@ -10,7 +10,7 @@
       </div>
       <div class="button-group">
         <el-button type="primary" @click="confirm">确认</el-button>
-        <el-button @click="clearFields">取消</el-button>
+        <el-button @click="clearFields">返回</el-button>
       </div>
     </div>
   </template>
@@ -29,14 +29,13 @@ export default {
   methods: {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
-      this.$axios.post('/permissions/set',{
-  params: {
+      const params = new URLSearchParams({
     name:this.name,
     password:this.password,
     readable:this.readable,
     writable:this.writable,
-  }
-})
+  }).toString();
+      this.$axios.post(`/permissions/set?${params}`)
         .then(response => {
           console.log('添加成功:', response.data);
           this.$message.success('添加成功');
@@ -47,10 +46,7 @@ export default {
         });
     },
     clearFields() {
-      this.readable = '';
-      this.writable = '';
-      this.username = '';
-      this.password = '';
+      this.$router.push({ name: 'CheckAuthor' });
     }
   }
 };
