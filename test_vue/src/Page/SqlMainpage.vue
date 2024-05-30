@@ -45,7 +45,7 @@ export default {
     },
    deleteRow(name) {
     this.tableData = this.tableData.filter(table => table.name !== name);
-    this.$axios.post('/api/delete-table?name=${name}')
+    this.$axios.post(`/modify_database/delete_table?name=${name}`)
     .then(() => { // 不使用 response 变量
       this.$message.success('删除成功');
       // 删除成功后，刷新表格数据
