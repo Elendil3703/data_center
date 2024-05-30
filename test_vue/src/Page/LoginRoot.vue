@@ -41,8 +41,8 @@
 } catch (error) {
   if (error.response && error.response.status === 400) {
     // 提示特定的错误信息
-    console.error('Login failed:', error.response.data.msg);
-    alert(`Login failed: ${error.response.data.msg}`);
+    console.error('Login failed:', error.response.data.message);
+    alert(`Login failed: ${error.response.data.message}`);
   } else {
     // 处理其他错误
     console.error('Login failed:', error);
