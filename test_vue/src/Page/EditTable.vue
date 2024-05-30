@@ -185,13 +185,13 @@ export default {
     } else {
       this.$message.error('请填写完整字段信息');
     }
-      this.$axios.post('/modify_database/add_field',{
-  params: {
+    const params = new URLSearchParams({
     tableName: this.tableName,
     columnName: this.newField.COLUMN_NAME,
     columnType: this.newField.type
-  }
-        })
+    
+  }).toString();
+      this.$axios.post(`/modify_database/add_field?${params}`)
         .then(response => {
           console.log('添加成功:', response.data);
           this.$message.success('添加成功');
@@ -254,12 +254,11 @@ export default {
       this.$message.error('请填写完整字段信息');
     }
     // 提示删除成功
-    this.$axios.post('/api/delete-table', {
-  params: {
-    tableName: this.tableNname,
-    columnName: this.deleteFieldNAME
-  }
-})
+    const params = new URLSearchParams({
+      tableName: this.tableNname,
+    columnName: this.deleteFieldNAME  
+  }).toString();
+    this.$axios.post(`/api/delete-table?${params}`)
     .then(() => { // 不使用 response 变量
       this.$message.success('删除成功');
     })

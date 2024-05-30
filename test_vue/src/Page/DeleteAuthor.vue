@@ -8,7 +8,7 @@
       </div>
       <div class="button-group">
         <el-button type="danger" @click="confirm">确认删除</el-button>
-        <el-button @click="clearFields">取消</el-button>
+        <el-button @click="clearFields">返回</el-button>
       </div>
     </div>
   </template>
@@ -31,13 +31,12 @@ export default {
   methods: {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
-      this.$axios.post('/permissions/delete', {
-  params: {
+      const params = new URLSearchParams({
     name:this.username,
     adminName:this.adminName,
     adminPassword:this.adminPassword
-  }
-})
+  }).toString();
+      this.$axios.post(`/permissions/delete?${params}`)
         .then(response => {
           console.log('删除成功:', response.data);
           this.$message.success('删除成功');
@@ -48,8 +47,7 @@ export default {
         });
     },
     clearFields() {
-      this.adminName = '';
-      this.adminPassword = '';
+      this.$router.push({ name: 'CheckAuthor' });
     }
   }
 };
