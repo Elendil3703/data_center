@@ -62,7 +62,7 @@ export default {
     },
     fetchTableData() {
       // 使用 this.$axios 发送请求
-      this.$axios.get('/api/tables')
+      this.$axios.get('/modify_database/tables')
         .then(response => {
           // 将后端返回的表名数组转换为包含对象的数组
           this.tableData = response.data.map(name => ({ name }));
