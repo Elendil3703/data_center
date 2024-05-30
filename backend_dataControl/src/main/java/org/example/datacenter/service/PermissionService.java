@@ -65,7 +65,7 @@ public class PermissionService {
                 permissionMapper.grantInsertUpdatePermission(tableName, name);
             }
         } catch (IllegalArgumentException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+            throw new IllegalArgumentException(ex.getMessage());
         }
     }
 
