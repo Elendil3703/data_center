@@ -54,7 +54,7 @@ const routes = [
   {
     path: '/route-five',
     component: SqlManage,
-    meta: { requiresAuth: true },
+    //meta: { requiresAuth: true },
     children: [
       {
         path: '',

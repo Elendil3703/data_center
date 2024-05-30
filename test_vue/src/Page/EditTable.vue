@@ -49,13 +49,7 @@
           <el-input v-model="newField.COLUMN_NAME"></el-input>
         </el-form-item>
         <el-form-item label="字段类型">
-          <el-select v-model="newField.type" placeholder="请选择数据类型" style="width: 150px;">
-          <el-option label="int" value="int"></el-option>
-          <el-option label="date" value="date"></el-option>
-          <el-option label="float" value="float"></el-option>
-          <el-option label="double" value="double"></el-option>
-          <el-option label="char" value="char"></el-option>
-        </el-select>
+          <el-input v-model="newField.type" placeholder="请准确输入mysql数据类型"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -176,9 +170,6 @@ export default {
         this.$set(row, this.newField.COLUMN_NAME, '');
       });
 
-      // 清空新字段表单
-      this.newField.COLUMN_NAME = '';
-      this.newField.type = '';
 
       // 保持对话框可见
       this.addFieldDialogVisible = true;
@@ -195,9 +186,12 @@ export default {
         .then(response => {
           console.log('添加成功:', response.data);
           this.$message.success('添加成功');
+          this.newField.COLUMN_NAME = '';
+          this.newField.type = '';
         })
         .catch(error => {
           console.error('添加失败:', error);
+          console.log(params);
           this.$message.error('添加失败');
         });
   },
@@ -280,10 +274,7 @@ export default {
 </script>
 
 <style scoped>
-.edit-table-container {
-  padding: 20px;
-  text-align: center;
-}
+
 
 .table-wrapper {
   display: flex;

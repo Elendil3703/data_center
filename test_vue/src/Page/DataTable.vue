@@ -109,15 +109,14 @@ export default {
 </script>
 
 <style scoped>
-.detail-container {
-  padding: 20px;
-}
+
 
 .table-wrapper {
   overflow: auto; /* 添加水平滚动条 */
   width: 100%; /* 确保容器不会超过父容器的宽度 */
   display: flex;
   justify-content: center; /* 使表格居中 */
+  max-height: calc(100vh - 100px);
 }
 
 .table-container {
@@ -139,4 +138,10 @@ export default {
 .el-button {
   margin-right: 10px;
 }
+.detail-container {
+  height: calc(100vh - 40px); /* 根据视口高度调整容器高度 */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 </style>

@@ -23,13 +23,11 @@
         >
         </el-input>
         <label class="param-label" style="margin-left: 10px;">数据类型：</label>
-        <el-select v-model="param.type" placeholder="请选择数据类型" style="width: 150px;">
-          <el-option label="int" value="int"></el-option>
-          <el-option label="date" value="date"></el-option>
-          <el-option label="float" value="float"></el-option>
-          <el-option label="double" value="double"></el-option>
-          <el-option label="char" value="char"></el-option>
-        </el-select>
+        <el-input
+          v-model="param.type"
+          placeholder="新增列属性"
+          style="width: 200px;"
+        ></el-input>
         <el-checkbox v-model="param.primaryKey" style="margin-left: 10px;">设为主键</el-checkbox>
         <el-button type="danger" icon="el-icon-delete" @click="removeParam(index)" style="margin-left: 10px;"></el-button>
       </div>
