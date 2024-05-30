@@ -5,6 +5,7 @@
       <h2 class="table-title">所有数据表</h2>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="name" label="表格名称" width="180"></el-table-column>
+        <el-table-column prop="permission" label="共享状态" width="180" :formatter="formatPermission"></el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
             <el-link type="primary" @click="editRow(scope.row.name)">编辑</el-link>
@@ -22,14 +23,17 @@ export default {
   data() {
     return {
       tableData: [
-        { name: '2016-05-02'},
-        { name: '2016-05-04'},
-        { name: '2016-05-01'},
-        { name: '2016-05-03'}
+        { name: '2016-05-02',permission:true},
+        { name: '2016-05-04',permission:false},
+        { name: '2016-05-01',permission:true},
+        { name: '2016-05-03',permission:false}
       ]
     };
   },
   methods: {
+    formatPermission(row, column, cellValue) {
+      return cellValue ? '非共享' : '共享';
+    },
     createTable() {
       console.log('创建数据表');
       this.$router.push({ name: 'CreateTable' });
@@ -65,7 +69,7 @@ export default {
       this.$axios.get('/modify_database/tables')
         .then(response => {
           // 将后端返回的表名数组转换为包含对象的数组
-          this.tableData = response.data.map(name => ({ name }));
+          this.tableData = response.data;
         })
         .catch(error => {
           console.error('获取表格数据失败:', error);
