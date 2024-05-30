@@ -29,14 +29,14 @@ export default {
   methods: {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
-      const payload = {
-        name:this.name,
-        password:this.password,
-        readable:this.readable,
-        writable:this.writable,
-      };
-      console.log('Payload:', payload);
-      this.$axios.post('/permissions/set', payload)
+      this.$axios.post('/permissions/set',{
+  params: {
+    name:this.name,
+    password:this.password,
+    readable:this.readable,
+    writable:this.writable,
+  }
+})
         .then(response => {
           console.log('添加成功:', response.data);
           this.$message.success('添加成功');

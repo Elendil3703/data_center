@@ -129,7 +129,7 @@ export default {
   methods: {
     fetchColumnData() {
       // 使用静态测试数据填充表格内容
-      this.$axios.get('/modify_database/table_info')
+      this.$axios.get('/modify_database/table_info?tableName=${this.tableName}')
         .then(response => {
           // 设置 columns 数据
           this.columns = response.data;
@@ -142,7 +142,7 @@ export default {
     },
     fetchTableData() {
       // 使用 this.$axios 发送请求以获取表格数据
-      this.$axios.get('/modify_database/table_data')
+      this.$axios.get('/modify_database/table_data?tableName=${this.tableName}')
         .then(response => {
           // 设置 tableData 数据
           this.tableData = response.data;
@@ -185,13 +185,13 @@ export default {
     } else {
       this.$message.error('请填写完整字段信息');
     }
-    const payload = {
-        tableName: this.tableName,
-        columnName: this.newField.COLUMN_NAME,
-        columnType: this.newField.type
-      };
-      console.log('Payload:', payload);
-      this.$axios.post('/modify_database/add_field', payload)
+      this.$axios.post('/modify_database/add_field',{
+  params: {
+    tableName: this.tableName,
+    columnName: this.newField.COLUMN_NAME,
+    columnType: this.newField.type
+  }
+        })
         .then(response => {
           console.log('添加成功:', response.data);
           this.$message.success('添加成功');
@@ -253,12 +253,13 @@ export default {
     else {
       this.$message.error('请填写完整字段信息');
     }
-    const payload = {
-        tableName: this.tableNname,
-        columnName: this.deleteFieldNAME
-      };
     // 提示删除成功
-    this.$axios.post('/api/delete-table', payload)
+    this.$axios.post('/api/delete-table', {
+  params: {
+    tableName: this.tableNname,
+    columnName: this.deleteFieldNAME
+  }
+})
     .then(() => { // 不使用 response 变量
       this.$message.success('删除成功');
     })
