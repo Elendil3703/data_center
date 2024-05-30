@@ -212,7 +212,7 @@ export default {
         fields: this.tableData
       };
       console.log('Payload:', payload);
-      this.$axios.post('/api/your-endpoint', payload)
+      this.$axios.post('/modify_database/update_data', payload)
         .then(response => {
           console.log('保存成功:', response.data);
           this.$message.success('保存成功');
