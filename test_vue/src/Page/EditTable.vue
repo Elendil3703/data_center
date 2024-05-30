@@ -249,10 +249,10 @@ export default {
     }
     // 提示删除成功
     const params = new URLSearchParams({
-      tableName: this.tableNname,
+      tableName: this.tableName,
     columnName: this.deleteFieldNAME  
   }).toString();
-    this.$axios.post(`/api/delete-table?${params}`)
+    this.$axios.post(`/modify_database/remove_field?${params}`)
     .then(() => { // 不使用 response 变量
       this.$message.success('删除成功');
     })
