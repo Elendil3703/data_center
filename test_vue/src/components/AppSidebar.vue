@@ -93,7 +93,7 @@ export default {
 
 <style scoped>
 .tac {
-  width: 160px; /* 根据需要调整宽度 */
+  width: 200px; /* 根据需要调整宽度 */
   height: calc(100vh - 50px); /* 减去顶部的偏移量 */
   position: fixed; /* 固定位置，不随页面滚动 */
   left: 0; /* 紧贴左侧 */
@@ -101,7 +101,7 @@ export default {
   overflow-y: auto; /* 如果内容过多，允许滚动 */
 }
 .menu-spacer {
-  height: 300px; /* 设置空白菜单项的高度 */
+  height: 250px; /* 设置空白菜单项的高度 */
   pointer-events: none; /* 保持不可点击 */
   opacity: 0; /* 使其透明，不显示任何内容 */
 }
