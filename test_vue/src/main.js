@@ -6,6 +6,7 @@ import router from './router/router.js'; // 确保router的路径正确
 import ElementUI from 'element-ui';
 import axios from 'axios';
 import 'element-ui/lib/theme-chalk/index.css';
+Vue.config.devtools = true;
 Vue.use(VueRouter);
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;

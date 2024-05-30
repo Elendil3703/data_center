@@ -48,8 +48,8 @@ export default {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
       const params = new URLSearchParams({
-    name: this.adminDataArray.name,
-    password: this.adminDataArray.password,
+    name: this.adminData.name,
+    password: this.adminData.password,
     readable: this.editForm.readable,
     writable: this.editForm.writable,
     adminName: this.authForm.username,
