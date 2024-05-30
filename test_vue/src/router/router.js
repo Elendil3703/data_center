@@ -89,7 +89,7 @@ const routes = [
   {
     path: '/route-six',
     component: AuthorManage,
-    meta: { requiresAuth: true },
+    //meta: { requiresAuth: true },
     children: [
       {
         path: '',
