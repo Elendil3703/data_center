@@ -129,7 +129,7 @@ export default {
   methods: {
     fetchColumnData() {
       // 使用静态测试数据填充表格内容
-      this.$axios.get('/modify_database/table_info?tableName=${this.tableName}')
+      this.$axios.get(`/modify_database/table_info?tableName=${this.tableName}`)
         .then(response => {
           // 设置 columns 数据
           this.columns = response.data;
@@ -142,7 +142,7 @@ export default {
     },
     fetchTableData() {
       // 使用 this.$axios 发送请求以获取表格数据
-      this.$axios.get('/modify_database/table_data?tableName=${this.tableName}')
+      this.$axios.get(`/modify_database/table_data?tableName=${this.tableName}`)
         .then(response => {
           // 设置 tableData 数据
           this.tableData = response.data;
