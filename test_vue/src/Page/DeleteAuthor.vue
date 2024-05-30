@@ -31,13 +31,13 @@ export default {
   methods: {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
-      const payload = {
-        name:this.username,
-        adminName:this.adminName,
-        adminPassword:this.adminPassword
-      };
-      console.log('Payload:', payload);
-      this.$axios.post('/permissions/delete', payload)
+      this.$axios.post('/permissions/delete', {
+  params: {
+    name:this.username,
+    adminName:this.adminName,
+    adminPassword:this.adminPassword
+  }
+})
         .then(response => {
           console.log('删除成功:', response.data);
           this.$message.success('删除成功');

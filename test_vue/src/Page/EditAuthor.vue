@@ -47,16 +47,16 @@ export default {
   methods: {
     confirm() {
       // 实现确认逻辑，例如发送请求到后端
-      const payload = {
-        name:this.adminDataArray.name,
-        password:this.adminDataArray.password,
-        readable:this.editForm.readable,
-        writable:this.editForm.writable,
-        adminName:this.authForm.username,
-        adminPassword:this.authForm.password
-      };
-      console.log('Payload:', payload);
-      this.$axios.post('/permissions/update', payload)
+      this.$axios.post('/permissions/update',{
+  params: {
+    name:this.adminDataArray.name,
+    password:this.adminDataArray.password,
+    readable:this.editForm.readable,
+    writable:this.editForm.writable,
+    adminName:this.authForm.username,
+    adminPassword:this.authForm.password
+  }
+})
         .then(response => {
           console.log('修改成功:', response.data);
           this.$message.success('修改成功');
