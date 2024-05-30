@@ -28,14 +28,14 @@
       async login() {
         try {
   const response = await this.$axios.post('/login', {
-    username: this.name,
+    name: this.name,
     password: this.password
   });
   const token = response.data.data.token;
   // Store the token in local storage
   localStorage.setItem('jwt', token);
   // Set the Authorization header for future requests
-  this.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  this.$axios.defaults.headers.common['token'] = token;
   // Redirect to the DataQuery component
   this.$router.push({ name: 'DataQuery' });
 } catch (error) {
