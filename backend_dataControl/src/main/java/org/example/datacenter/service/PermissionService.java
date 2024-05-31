@@ -38,6 +38,10 @@ public class PermissionService {
                     .distinct()
                     .collect(Collectors.toList());
 
+            readable = combinedReadableList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+
             // 从writable字符串中解析出ID列表
             List<Integer> writableList = Arrays.stream(writable.split(","))
                     .map(Integer::parseInt)
