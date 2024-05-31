@@ -6,7 +6,7 @@
         <el-input v-model="password" placeholder="业务管理员密码" class="input-field" style="width: 300px;"></el-input>
         <h3>业务系统管理员权限</h3>
         <el-input v-model="readable" placeholder="可读表格（用逗号分隔）" class="input-field" style="width: 300px; margin-bottom: 10px;"></el-input>
-        <el-input v-model="writable" placeholder="可写表格（用逗号分隔）" class="input-field" style="width: 300px;"></el-input>
+        <el-input v-model="writable" placeholder="可写表格（用逗号分隔）请勿写入共享表格的表格序号" class="input-field" style="width: 370px;"></el-input>
       </div>
       <div class="button-group">
         <el-button type="primary" @click="confirm">确认</el-button>

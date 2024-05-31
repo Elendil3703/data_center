@@ -4,6 +4,7 @@
     <div class="table-container">
       <h2 class="table-title">所有数据表</h2>
       <el-table :data="tableData" style="width: 100%">
+        <el-table-column prop="id" label="表格编号" width="180"></el-table-column>
         <el-table-column prop="name" label="表格名称" width="180"></el-table-column>
         <el-table-column prop="permission" label="共享状态" width="180" :formatter="formatPermission"></el-table-column>
         <el-table-column label="操作">
@@ -23,10 +24,10 @@ export default {
   data() {
     return {
       tableData: [
-        { name: '2016-05-02',permission:true},
-        { name: '2016-05-04',permission:false},
-        { name: '2016-05-01',permission:true},
-        { name: '2016-05-03',permission:false}
+        { id:1,name: '2016-05-02',permission:true},
+        { id:2,name: '2016-05-04',permission:false},
+        { id:3,name: '2016-05-01',permission:true},
+        { id:4,name: '2016-05-03',permission:false}
       ]
     };
   },
