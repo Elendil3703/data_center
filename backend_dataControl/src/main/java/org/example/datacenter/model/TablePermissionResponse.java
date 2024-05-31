@@ -1,6 +1,5 @@
 package org.example.datacenter.model;
 
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,15 +8,11 @@ import lombok.Setter;
 @Getter
 @Data
 
-public class TablePermissions{
-
-    private int id;
+public class TablePermissionResponse {
     private String name;
     private boolean permission;  //权限为0为共享表格，1为私有表格
-    public TablePermissions(String name, boolean permission) {
+    public TablePermissionResponse(String name, boolean permission) {
         this.name = name;
         this.permission = permission;
     }
-
-
 }

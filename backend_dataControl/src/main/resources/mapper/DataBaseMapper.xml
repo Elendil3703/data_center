@@ -50,4 +50,8 @@
         SET ${columnName} = #{columnValue}
         WHERE ${primaryKey} = #{primaryKeyValue}
     </update>
+
+    <select id="getTablePermission" resultType="boolean">
+        SELECT permission FROM table_permissions WHERE name = #{tableName}
+    </select>
 </mapper>

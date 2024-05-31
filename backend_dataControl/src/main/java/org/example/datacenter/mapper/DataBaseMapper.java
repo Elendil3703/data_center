@@ -25,5 +25,5 @@ public interface DataBaseMapper {
     // 查询表格中的所有数据
     List<Map<String, Object>> getTableData(@Param("tableName") String tableName);
     void updateTableField(@Param("tableName") String tableName, @Param("columnName") String columnName, @Param("columnValue") String columnValue, @Param("primaryKey") String primaryKey, @Param("primaryKeyValue") String primaryKeyValue);
-
+    boolean getTablePermission(@Param("tableName") String tableName);
 }

@@ -3,9 +3,12 @@ package org.example.datacenter.service;
 import org.example.datacenter.exception.BadRequestException;
 import org.example.datacenter.mapper.DataBaseMapper;
 import org.example.datacenter.model.CreateTableRequest;
+import org.example.datacenter.model.TablePermissionResponse;
+import org.example.datacenter.model.TablePermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,8 +57,14 @@ public class DataBaseService {
         dataBaseMapper.removeField(tableName, columnName);
     }
 
-    public List<String> getAllTables() {
-        return dataBaseMapper.getAllTables();
+    public List<TablePermissionResponse> getAllTables() {
+        List<String> tables = dataBaseMapper.getAllTables();
+        List<TablePermissionResponse> permissionsList = new ArrayList<>();
+        for(String table:tables){
+            boolean permission = dataBaseMapper.getTablePermission(table);
+            permissionsList.add(new TablePermissionResponse(table, permission));
+        }
+        return permissionsList;
     }
 
     public List<Map<String, Object>> getTableInfo(String tableName) {
@@ -70,6 +79,7 @@ public class DataBaseService {
         }
         return dataBaseMapper.getTableData(tableName);
     }
+
     public void updateTableField(String tableName, String columnName, String columnValue, String primaryKey, String primaryKeyValue) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
             throw new IllegalArgumentException("Table " + tableName + " does not exist");

@@ -1,5 +1,7 @@
 package org.example.datacenter.controller;
 import org.example.datacenter.model.CreateTableRequest;
+import org.example.datacenter.model.TablePermissionResponse;
+import org.example.datacenter.model.TablePermissions;
 import org.example.datacenter.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class DataBaseController {
         dataBaseService.removeField(tableName, columnName);
     }
     @GetMapping("/tables")
-    public List<String> getAllTables() {
+    public List<TablePermissionResponse> getAllTables() {
         return dataBaseService.getAllTables();
     }
 
@@ -42,6 +44,7 @@ public class DataBaseController {
     public List<Map<String, Object>> getTableData(@RequestParam String tableName) {
         return dataBaseService.getTableData(tableName);
     }
+
     @PostMapping("/update_field")
     public void updateTableField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnValue, @RequestParam String primaryKey, @RequestParam String primaryKeyValue) {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
