@@ -57,14 +57,15 @@ public class DataBaseService {
         dataBaseMapper.removeField(tableName, columnName);
     }
 
-    public List<TablePermissionResponse> getAllTables() {
-        List<String> tables = dataBaseMapper.getAllTables();
-        List<TablePermissionResponse> permissionsList = new ArrayList<>();
-        for(String table:tables){
-            boolean permission = dataBaseMapper.getTablePermission(table);
-            permissionsList.add(new TablePermissionResponse(table, permission));
-        }
-        return permissionsList;
+    public List<TablePermissions> getAllTables() {
+//        List<String> tables = dataBaseMapper.getAllTables();
+//        List<TablePermissionResponse> permissionsList = new ArrayList<>();
+//        for(String table:tables){
+//            boolean permission = dataBaseMapper.getTablePermission(table);
+//            permissionsList.add(new TablePermissionResponse(table, permission));
+//        }
+//        return permissionsList;
+        return dataBaseMapper.getAllTablePermission();
     }
 
     public List<Map<String, Object>> getTableInfo(String tableName) {

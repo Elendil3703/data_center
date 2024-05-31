@@ -2,6 +2,7 @@ package org.example.datacenter.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.example.datacenter.model.TablePermissions;
 
 import java.util.List;
 import java.util.Map;
@@ -26,4 +27,6 @@ public interface DataBaseMapper {
     List<Map<String, Object>> getTableData(@Param("tableName") String tableName);
     void updateTableField(@Param("tableName") String tableName, @Param("columnName") String columnName, @Param("columnValue") String columnValue, @Param("primaryKey") String primaryKey, @Param("primaryKeyValue") String primaryKeyValue);
     boolean getTablePermission(@Param("tableName") String tableName);
+    List<TablePermissions> getAllTablePermission();
+
 }

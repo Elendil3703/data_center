@@ -32,7 +32,7 @@ public class DataBaseController {
         dataBaseService.removeField(tableName, columnName);
     }
     @GetMapping("/tables")
-    public List<TablePermissionResponse> getAllTables() {
+    public List<TablePermissions> getAllTables() {
         return dataBaseService.getAllTables();
     }
 

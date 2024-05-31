@@ -54,4 +54,8 @@
     <select id="getTablePermission" resultType="boolean">
         SELECT permission FROM table_permissions WHERE name = #{tableName}
     </select>
+
+    <select id="getAllTablePermission" resultType="java.util.Map">
+        SELECT * FROM table_permissions
+    </select>
 </mapper>
