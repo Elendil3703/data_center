@@ -28,7 +28,7 @@ public class PermissionService {
             // 从readable字符串中解析出ID列表
             List<Integer> readableList = Arrays.stream(readable.split(","))
                     .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+                    .toList();
 
             // 获取所有permission为0的ID列表
             List<Integer> idsWithPermissionZero = permissionMapper.getIdsWithPermissionZero();
@@ -91,7 +91,7 @@ public class PermissionService {
             // 从readable字符串中解析出ID列表
             List<Integer> readableList = Arrays.stream(readable.split(","))
                     .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+                    .toList();
 
             // 获取所有permission为0的ID列表
             List<Integer> idsWithPermissionZero = permissionMapper.getIdsWithPermissionZero();
@@ -100,6 +100,10 @@ public class PermissionService {
             List<Integer> combinedReadableList = Stream.concat(readableList.stream(), idsWithPermissionZero.stream())
                     .distinct()
                     .collect(Collectors.toList());
+
+            readable = combinedReadableList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
 
             // 从writable字符串中解析出ID列表
             List<Integer> writableList = Arrays.stream(writable.split(","))
