@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 import DataQuery from '@/Page/DataQuery.vue'; // 确保路径正确
 import GroupSearch from '@/Page/GroupSearch.vue';
 import DataCharts from '@/Page/DataCharts.vue';
-import ApiManage from '@/Page/ApiManage.vue';
 import SqlManage from '@/Page/SqlManage.vue';
 import SqlMainpage from '@/Page/SqlMainpage.vue';
 import DataTable from '@/Page/DataTable.vue';
@@ -45,11 +44,6 @@ const routes = [
     path: '/route-three',
     name: 'GroupSearch',
     component: GroupSearch
-  },
-  {
-    path: '/route-four',
-    name: 'ApiManage',
-    component: ApiManage,
   },
   {
     path: '/route-five',

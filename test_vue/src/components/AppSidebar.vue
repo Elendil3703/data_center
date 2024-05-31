@@ -17,10 +17,6 @@
         <i class="el-icon-help"></i>
           <span slot="title">分组&连接查询</span>
       </el-menu-item>
-      <el-menu-item index="/route-four">
-        <i class="el-icon-tickets"></i>
-          <span slot="title">API管理</span>
-      </el-menu-item>
       <el-menu-item index="/route-five" >
         <i class="el-icon-circle-check"></i>
           <span slot="title">操纵统一数据库</span>
