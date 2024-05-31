@@ -2,21 +2,90 @@ package org.example.datacenter.service;
 
 import org.example.datacenter.exception.BadRequestException;
 import org.example.datacenter.mapper.DataBaseMapper;
+import org.example.datacenter.mapper.PermissionMapper;
+import org.example.datacenter.model.Admin;
 import org.example.datacenter.model.CreateTableRequest;
 import org.example.datacenter.model.TablePermissionResponse;
 import org.example.datacenter.model.TablePermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DataBaseService {
     @Autowired
     private DataBaseMapper dataBaseMapper;
+    @Autowired
+    private PermissionMapper permissionMapper;
+
+    public void updatePermission(String name, String password, String readable, String writable) {
+        try {
+            // 检查用户是否存在于admin表和MySQL user表中
+            if (permissionMapper.countUserInAdmin(name) == 0 || permissionMapper.countUserInMySQL(name) == 0) {
+                throw new IllegalArgumentException("User does not exist in admin table or MySQL user table.");
+            }
+
+            // 删除admin表中的用户
+            permissionMapper.deletePermission(name);
+
+            // 删除MySQL用户
+            permissionMapper.dropUser(name);
+
+            // 从readable字符串中解析出ID列表
+            List<Integer> readableList = Arrays.stream(readable.split(","))
+                    .map(Integer::parseInt)
+                    .toList();
+
+            // 获取所有permission为0的ID列表
+            List<Integer> idsWithPermissionZero = permissionMapper.getIdsWithPermissionZero();
+
+            // 合并两个ID列表并去重
+            List<Integer> combinedReadableList = Stream.concat(readableList.stream(), idsWithPermissionZero.stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            readable = combinedReadableList.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+
+            // 从writable字符串中解析出ID列表
+            List<Integer> writableList = Arrays.stream(writable.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+
+            // 重新插入用户权限到admin表
+            permissionMapper.insertPermission(name, password, readable, writable);
+
+            // 重新创建MySQL用户
+            permissionMapper.createUser(name, password);
+
+            // 获取combinedReadableList中的表格名称
+            List<String> readableTableNames = permissionMapper.getTableNamesByIds(combinedReadableList);
+
+            // 获取writableList中的表格名称
+            List<String> writableTableNames = permissionMapper.getTableNamesByIds(writableList);
+
+            // 为用户授予SELECT权限
+            for (String tableName : readableTableNames) {
+                permissionMapper.grantSelectPermission(tableName, name);
+            }
+
+            // 为用户授予INSERT和UPDATE权限
+            for (String tableName : writableTableNames) {
+                permissionMapper.grantInsertUpdatePermission(tableName, name);
+            }
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+    }
 
     public void createTable(CreateTableRequest request) {
         // 生成创建表的SQL语句
@@ -32,7 +101,16 @@ public class DataBaseService {
         dataBaseMapper.createTable(request.getName(), createSQL.toString());
         // 在table_permissions表中插入对应的记录
         dataBaseMapper.insertTablePermission(request.getName(), request.getPermission());
-
+        Integer tableId = dataBaseMapper.getTableId(request.getName()); //新表的名称叫tableId
+        if(!request.getPermission()){
+            //如果是共享表
+            List<Admin> admins = permissionMapper.getAdmins();
+            for(Admin admin:admins){
+                //对于每个叫admin的管理员
+                String readable = admin.getReadable() + "," + tableId;
+                updatePermission(admin.getName(), admin.getPassword(), readable, admin.getWritable());
+            }
+        }
     }
     public void deleteTable(String tableName) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
@@ -40,8 +118,25 @@ public class DataBaseService {
         }
         // 删除表格
         dataBaseMapper.deleteTable(tableName);
+        boolean permission = dataBaseMapper.getTablePermission(tableName);
+        Integer tableId= dataBaseMapper.getTableId(tableName);
         // 删除table_permissions表中的记录
         dataBaseMapper.deleteTablePermission(tableName);
+        if(!permission){
+            //如果是共享表
+            List<Admin> admins = permissionMapper.getAdmins();
+            for(Admin admin:admins){
+                //对于每个叫admin的管理员
+                String[] parts = admin.getReadable().split(",");
+
+                // 使用 Stream 过滤掉特定的整数并重新组合
+                String readable = Arrays.stream(parts)
+                        .filter(part -> !part.equals(String.valueOf(tableId)))
+                        .collect(Collectors.joining(","));
+                updatePermission(admin.getName(), admin.getPassword(), readable, admin.getWritable());
+            }
+
+        }
     }
     public void addField(String tableName, String columnName, String columnType) {
         String fieldSQL = columnName + " " + columnType;

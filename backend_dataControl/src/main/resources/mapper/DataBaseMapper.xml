@@ -58,4 +58,10 @@
     <select id="getAllTablePermission" resultType="java.util.Map">
         SELECT * FROM table_permissions
     </select>
+
+    <select id="getTableId" resultType="int">
+        SELECT id FROM table_permissions WHERE name = #{tableName}
+    </select>
+
+
 </mapper>

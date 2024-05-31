@@ -28,5 +28,5 @@ public interface DataBaseMapper {
     void updateTableField(@Param("tableName") String tableName, @Param("columnName") String columnName, @Param("columnValue") String columnValue, @Param("primaryKey") String primaryKey, @Param("primaryKeyValue") String primaryKeyValue);
     boolean getTablePermission(@Param("tableName") String tableName);
     List<TablePermissions> getAllTablePermission();
-
+    Integer getTableId(@Param("tableName") String tableName); //从permissions表里面的到表格的id
 }
