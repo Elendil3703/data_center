@@ -2,7 +2,6 @@
     <div class="admin-view-container">
       <h2 class="admin-title">当前已有的业务系统管理员</h2>
       <el-table class="table-container" :data="paginatedData" style="width:800px;height:300px" border>
-        <el-table-column prop="adminID" label="编号"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="password" label="密码"></el-table-column>
         <el-table-column prop="readable" label="可读表格"></el-table-column>
