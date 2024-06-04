@@ -122,7 +122,22 @@ public class DataBaseService {
         Integer tableId= dataBaseMapper.getTableId(tableName);
         // 删除table_permissions表中的记录
         dataBaseMapper.deleteTablePermission(tableName);
-        
+        // 删除共享表格的时候同步更改管理员的权限
+        if(!permission){
+            //如果是共享表
+            List<Admin> admins = permissionMapper.getAdmins();
+            for(Admin admin:admins){
+                //对于每个叫admin的管理员
+                String[] parts = admin.getReadable().split(",");
+
+                // 使用 Stream 过滤掉特定的整数并重新组合
+                String readable = Arrays.stream(parts)
+                        .filter(part -> !part.equals(String.valueOf(tableId)))
+                        .collect(Collectors.joining(","));
+                updatePermission(admin.getName(), admin.getPassword(), readable, admin.getWritable());
+            }
+
+        }
     }
     public void addField(String tableName, String columnName, String columnType) {
         String fieldSQL = columnName + " " + columnType;
