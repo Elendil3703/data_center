@@ -3,20 +3,20 @@
 # docker 部署
 docker-compose -p sse_demo up --build -d
 
-# 项目路径
-JAVA_PROJECT_PATH="./Flink-Kafka/target/Flink-Kafka-1.0-SNAPSHOT-shaded.jar"
-PYTHON_PROJECT_PATH="./consumers/main.py"
-
 # 启动Java项目
 start_java_project() {
-    java --add-opens java.base/java.lang=ALL-UNNAMED -jar $JAVA_PROJECT_PATH &
+    cd Flink-Kafka
+    ./start_java.sh &
     echo "Java project have been started."
+    cd ../
 }
 
 # 启动Python项目
 start_python_project() {
-    python $PYTHON_PROJECT_PATH &
+    cd consumers
+    ./start_python.sh &
     echo "Java project have been started."
+    cd ../
 }
 
 # 启动Java和Python项目
