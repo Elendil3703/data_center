@@ -6,7 +6,7 @@ docker-compose -p sse_demo up --build -d
 # 启动Java项目
 start_java_project() {
     cd Flink-Kafka
-    ./start_java.sh &
+    ./start_java.sh
     echo "Java project have been started."
     cd ../
 }
@@ -14,8 +14,8 @@ start_java_project() {
 # 启动Python项目
 start_python_project() {
     cd consumers
-    ./start_python.sh &
-    echo "Java project have been started."
+    ./start_python.sh
+    echo "Python project have been started."
     cd ../
 }
 

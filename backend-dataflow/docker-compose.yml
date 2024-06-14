@@ -3,9 +3,10 @@ version: '3.7'
 services:
   # Kafka with Zookeeper
   zookeeper:
-    image: wurstmeister/zookeeper:latest
+    image: arm64v8/zookeeper:latest
     ports:
       - "2181:2181"
+    platform: linux/arm64
 
   kafka:
     image: wurstmeister/kafka
@@ -28,7 +29,7 @@ services:
   #   entrypoint: ["/bin/sh", "-c", "kafka-topics.sh --create --topic test --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1"]
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    image: arm64v8/elasticsearch:7.17.22
     environment:
       - discovery.type=single-node
       - ELASTIC_USERNAME=Sseuser
@@ -38,7 +39,8 @@ services:
       - "9300:9300"
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.10.2
+    image: arm64v8/kibana:7.17.22
+    platform: linux/arm64
     ports:
       - "5601:5601"
     depends_on:

@@ -33,7 +33,7 @@
     </select>
 
     <select id="getAllTables" resultType="String">
-        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name NOT IN ('admin', 'DataCenterAdmin', 'table_permissions')
+        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name NOT IN ('admin', 'data_center_admin', 'table_permissions')
     </select>
 
     <select id="getTableInfo" resultType="java.util.Map">
