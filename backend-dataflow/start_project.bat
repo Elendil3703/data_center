@@ -3,13 +3,17 @@
 REM Docker 部署
 docker-compose -p sse_demo up --build -d
 
-REM 启动Java项目
-start cmd /c "java --add-opens java.base/java.lang=ALL-UNNAMED -jar target/Flink-Kafka-1.0-SNAPSHOT-shaded.jar"
+REM 切换到脚本目录并启动Java项目
+cd Flink-Kafka
+start cmd /k "start_java.bat"
 echo Java project have been started.
+cd ../
 
 REM 启动Python项目
-start cmd /c "python .\consumers\main.py"
+cd consumers
+start cmd /k "start_python.bat"
 echo Python project have been started.
+cd ../
 
 echo Java and Python projects have been started.
 pause
