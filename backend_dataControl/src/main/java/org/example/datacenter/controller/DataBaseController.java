@@ -1,8 +1,5 @@
 package org.example.datacenter.controller;
-import org.example.datacenter.model.CreateTableRequest;
-import org.example.datacenter.model.FilterDataRequest;
-import org.example.datacenter.model.TablePermissionResponse;
-import org.example.datacenter.model.TablePermissions;
+import org.example.datacenter.model.*;
 import org.example.datacenter.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +44,8 @@ public class DataBaseController {
     }
 
     @PostMapping("/filter")
-    public List<Map<String, Object>> filterTableData(@RequestBody FilterDataRequest params) {
+    public List<Map<String, Object>> filterTableData(@RequestBody FilterDataWrapper wrapper) {
+        FilterDataRequest params = wrapper.getParams();
         return dataBaseService.filterTableData(params.getTableName(), params.getColumnName(), params.getMinValue(), params.getMaxValue());
     }
 
