@@ -24,8 +24,27 @@
     </div>
     <div class="button-group">
       <el-button type="primary" @click="editTable">编辑</el-button>
+      <el-button @click="showFilterDialog">筛选</el-button>
+      <el-button @click="cancelFilter">取消筛选</el-button>
       <el-button @click="goBack">返回</el-button>
     </div>
+    <el-dialog title="筛选表数据" :visible.sync="filterDialogVisible">
+      <el-form :model="filterForm">
+        <el-form-item label="列名称">
+          <el-input v-model="filterForm.columnName"></el-input>
+        </el-form-item>
+        <el-form-item label="最小值">
+          <el-input v-model="filterForm.minValue"></el-input>
+        </el-form-item>
+        <el-form-item label="最大值">
+          <el-input v-model="filterForm.maxValue"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="filterDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="applyFilter">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -65,17 +84,20 @@ export default {
         { COLUMN_NAME: 'sx' },
         { COLUMN_NAME: 'nx' },
         { COLUMN_NAME: 'ax' }
-      ]
+      ],
+      filterDialogVisible: false,
+      filterForm: {
+        columnName: '',
+        minValue: '',
+        maxValue: ''
+      }
     };
   },
   methods: {
     fetchColumnData() {
-      // 使用 this.$axios 发送请求以获取列信息
       this.$axios.get(`/modify_database/table_info?tableName=${this.tableName}`)
         .then(response => {
-          // 设置 columns 数据
           this.columns = response.data;
-          // 然后获取表数据
           this.fetchTableData();
         })
         .catch(error => {
@@ -83,10 +105,8 @@ export default {
         });
     },
     fetchTableData() {
-      // 使用 this.$axios 发送请求以获取表格数据
       this.$axios.get(`/modify_database/table_data?tableName=${this.tableName}`)
         .then(response => {
-          // 设置 tableData 数据
           this.tableData = response.data;
         })
         .catch(error => {
@@ -94,12 +114,34 @@ export default {
         });
     },
     editTable() {
-      // 处理编辑操作
       this.$router.push({ name: 'EditTable', params: { tableName: this.tableName } });
     },
     goBack() {
-      // 处理返回操作
       this.$router.push({ name: 'SqlMainpage' });
+    },
+    showFilterDialog() {
+      this.filterDialogVisible = true;
+    },
+    applyFilter() {
+      const { columnName, minValue, maxValue } = this.filterForm;
+      this.$axios.post(`/modify_database/filter`, {
+        params: {
+          tableName: this.tableName,
+          columnName,
+          minValue,
+          maxValue
+        }
+      })
+      .then(response => {
+        this.tableData = response.data;
+        this.filterDialogVisible = false;
+      })
+      .catch(error => {
+        console.error('筛选表格数据失败:', error);
+      });
+    },
+    cancelFilter() {
+      this.fetchTableData();
     }
   },
   created() {
@@ -109,18 +151,16 @@ export default {
 </script>
 
 <style scoped>
-
-
 .table-wrapper {
-  overflow: auto; /* 添加水平滚动条 */
-  width: 100%; /* 确保容器不会超过父容器的宽度 */
+  overflow: auto;
+  width: 100%;
   display: flex;
-  justify-content: center; /* 使表格居中 */
+  justify-content: center;
   max-height: calc(100vh - 100px);
 }
 
 .table-container {
-  width: fit-content; /* 让宽度根据内容调整 */
+  width: fit-content;
 }
 
 .button-group {
@@ -139,9 +179,8 @@ export default {
   margin-right: 10px;
 }
 .detail-container {
-  height: calc(100vh - 40px); /* 根据视口高度调整容器高度 */
+  height: calc(100vh - 40px);
   padding: 20px;
   box-sizing: border-box;
 }
-
 </style>
