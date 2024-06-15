@@ -1,5 +1,6 @@
 package org.example.datacenter.controller;
 import org.example.datacenter.model.CreateTableRequest;
+import org.example.datacenter.model.FilterDataRequest;
 import org.example.datacenter.model.TablePermissionResponse;
 import org.example.datacenter.model.TablePermissions;
 import org.example.datacenter.service.DataBaseService;
@@ -45,9 +46,9 @@ public class DataBaseController {
         return dataBaseService.getTableData(tableName);
     }
 
-    @GetMapping("/filter")
-    public List<Map<String, Object>> filterTableData(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String minValue, @RequestParam String maxValue) {
-        return dataBaseService.filterTableData(tableName, columnName, minValue, maxValue);
+    @PostMapping("/filter")
+    public List<Map<String, Object>> filterTableData(@RequestBody FilterDataRequest params) {
+        return dataBaseService.filterTableData(params.getTableName(), params.getColumnName(), params.getMinValue(), params.getMaxValue());
     }
 
     @PostMapping("/update_field")
