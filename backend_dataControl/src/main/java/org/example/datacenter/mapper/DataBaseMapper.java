@@ -25,6 +25,9 @@ public interface DataBaseMapper {
     List<Map<String, Object>> getTableInfo(@Param("tableName") String tableName);
     // 查询表格中的所有数据
     List<Map<String, Object>> getTableData(@Param("tableName") String tableName);
+
+    List<Map<String, Object>> filterTableData(@Param("tableName") String tableName, @Param("columnName") String columnName, @Param("minValue") String minValue, @Param("maxValue") String maxValue);
+
     void updateTableField(@Param("tableName") String tableName, @Param("columnName") String columnName, @Param("columnValue") String columnValue, @Param("primaryKey") String primaryKey, @Param("primaryKeyValue") String primaryKeyValue);
     boolean getTablePermission(@Param("tableName") String tableName);
     List<TablePermissions> getAllTablePermission();

@@ -51,6 +51,6 @@
     </select>
 
     <select id="getPasswordByName" resultType="string">
-        SELECT password FROM DataCenterAdmin WHERE name = #{name};
+        SELECT password FROM data_center_admin WHERE name = #{name};
     </select>
 </mapper>

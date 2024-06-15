@@ -45,6 +45,11 @@
         SELECT * FROM ${tableName}
     </select>
 
+    <select id="filterTableData" resultType="java.util.Map">
+        SELECT * FROM ${tableName}
+        WHERE ${columnName} BETWEEN #{minValue} AND #{maxValue}
+    </select>
+
     <update id="updateTableField">
         UPDATE ${tableName}
         SET ${columnName} = #{columnValue}

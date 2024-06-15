@@ -45,6 +45,11 @@ public class DataBaseController {
         return dataBaseService.getTableData(tableName);
     }
 
+    @GetMapping("/filter")
+    public List<Map<String, Object>> filterTableData(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String minValue, @RequestParam String maxValue) {
+        return dataBaseService.filterTableData(tableName, columnName, minValue, maxValue);
+    }
+
     @PostMapping("/update_field")
     public void updateTableField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnValue, @RequestParam String primaryKey, @RequestParam String primaryKeyValue) {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
