@@ -68,5 +68,18 @@
         SELECT id FROM table_permissions WHERE name = #{tableName}
     </select>
 
+    <insert id="insertData">
+        INSERT INTO ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach item="key" index="column" collection="data">
+                ${column},
+            </foreach>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <foreach item="value" index="column" collection="data">
+                #{value},
+            </foreach>
+        </trim>
+    </insert>
 
 </mapper>

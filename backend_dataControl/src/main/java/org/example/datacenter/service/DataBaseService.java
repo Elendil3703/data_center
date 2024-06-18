@@ -228,4 +228,14 @@ public class DataBaseService {
         }
     }
 
+    public void insertTableData(String tableName, Map<String, Object> dataToInsert) {
+        if (dataBaseMapper.tableExists(tableName) == 0) {
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
+        }
+        if(dataToInsert.isEmpty()){
+            throw new BadRequestException("Empty data row provided");
+        }
+        dataBaseMapper.insertData(tableName, dataToInsert);
+    }
+
 }

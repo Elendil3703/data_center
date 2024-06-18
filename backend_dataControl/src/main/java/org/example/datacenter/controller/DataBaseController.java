@@ -49,6 +49,13 @@ public class DataBaseController {
         return dataBaseService.filterTableData(params.getTableName(), params.getColumnName(), params.getMinValue(), params.getMaxValue());
     }
 
+    @PostMapping("/insert")
+    public void insertTableData(@RequestBody Map<String, Object> requestData){
+        String tableName = requestData.get("name").toString();
+        Map<String, Object> dataToInsert = (Map<String, Object>) requestData.get("row");
+        dataBaseService.insertTableData(tableName, dataToInsert);
+    }
+
     @PostMapping("/update_field")
     public void updateTableField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnValue, @RequestParam String primaryKey, @RequestParam String primaryKeyValue) {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
