@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-button type="primary" @click="createTable">创建数据表</el-button>
+    <div class="header">
+      <el-button type="primary" @click="createTable">创建数据表</el-button>
+    </div>
     <div class="table-container">
       <h2 class="table-title">所有数据表</h2>
       <el-table :data="tableData" style="width: 100%">
@@ -9,7 +11,7 @@
         <el-table-column prop="permission" label="共享状态" width="180" :formatter="formatPermission"></el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-link type="primary" @click="editRow(scope.row.name)">编辑</el-link>
+            <el-link type="primary" @click="editRow(scope.row.name,scope.row.permission)">编辑</el-link>
             <el-link type="primary" @click="viewDetails(scope.row.name)" style="margin-left: 10px;">查看详情</el-link>
             <el-link type="primary" @click="deleteRow(scope.row.name)" style="margin-left: 10px;">删除</el-link>
           </template>
@@ -24,10 +26,10 @@ export default {
   data() {
     return {
       tableData: [
-        { id:1,name: '2016-05-02',permission:true},
-        { id:2,name: '2016-05-04',permission:false},
-        { id:3,name: '2016-05-01',permission:true},
-        { id:4,name: '2016-05-03',permission:false}
+        { id:1, name: '2016-05-02', permission: true },
+        { id:2, name: '2016-05-04', permission: false },
+        { id:3, name: '2016-05-01', permission: true },
+        { id:4, name: '2016-05-03', permission: false }
       ]
     };
   },
@@ -39,44 +41,37 @@ export default {
       console.log('创建数据表');
       this.$router.push({ name: 'CreateTable' });
     },
-    editRow(name) {
-      //console.log('编辑:', row);
-      this.$router.push({ name: 'EditTable', params: { tableName: name } });
+    editRow(name, per) {
+      this.$router.push({ name: 'EditTable', params: { tableName: name, state: per } });
     },
     viewDetails(name) {
-      //console.log('查看详情:', row);
-      // 在组件方法中导航到 DataTable 路由
       this.$router.push({ name: 'DataTable', params: { tableName: name } });
     },
-   deleteRow(name) {
-    this.tableData = this.tableData.filter(table => table.name !== name);
-    this.$axios.post(`/modify_database/delete_table?name=${name}`)
-    .then(() => { // 不使用 response 变量
-      this.$message.success('删除成功');
-      // 删除成功后，刷新表格数据
+    deleteRow(name) {
       this.tableData = this.tableData.filter(table => table.name !== name);
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        this.$message.error('表格不存在');
-      } else {
-        this.$message.error('删除失败');
-      }
-      console.error('删除失败:', error);
-    });
+      this.$axios.post(`/modify_database/delete_table?name=${name}`)
+        .then(() => {
+          this.$message.success('删除成功');
+          this.tableData = this.tableData.filter(table => table.name !== name);
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 400) {
+            this.$message.error('表格不存在');
+          } else {
+            this.$message.error('删除失败');
+          }
+          console.error('删除失败:', error);
+        });
     },
     fetchTableData() {
-      // 使用 this.$axios 发送请求
       this.$axios.get('/modify_database/tables')
         .then(response => {
-          // 将后端返回的表名数组转换为包含对象的数组
           this.tableData = response.data;
         })
         .catch(error => {
           console.error('获取表格数据失败:', error);
         });
     },
-  
   },
   created() {
     this.fetchTableData();
@@ -85,14 +80,30 @@ export default {
 </script>
 
 <style scoped>
+
+
 .table-container {
-  width: 80%; /* 调整表格容器的宽度 */
-  transform: scale(0.8); /* 缩放表格 */
-  margin-top: 200px; /* 向下移动表格 */
+  width: 60%;
+  transform: scale(1); /* 放大表格 */
   margin-left: auto;
   margin-right: auto;
 }
+
 .table-title {
-  margin-bottom: 10px; /* 调整标题和表格之间的间距 */
+  margin-bottom: 10px;
 }
+
+.el-table {
+  text-align: center; /* 表格内容居中 */
+}
+
+.el-table th, .el-table td {
+  text-align: center;
+}
+
+.header {
+            position: absolute;
+            top: 70px;
+            right: 70px;
+        }
 </style>
