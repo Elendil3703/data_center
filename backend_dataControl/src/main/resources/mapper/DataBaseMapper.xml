@@ -82,4 +82,10 @@
         </trim>
     </insert>
 
+    <update id="changeTableState">
+        UPDATE table_permissions
+        SET permission = #{permission}
+        WHERE name = #{tableName}
+    </update>
+
 </mapper>
