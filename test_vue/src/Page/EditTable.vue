@@ -1,6 +1,8 @@
 <template>
   <div class="edit-table-container">
     <h2>表格名称：{{ tableName }}</h2>
+    <span v-if="!st">（共享）</span>
+      <span v-else>（非共享）</span>
     <div class="table-wrapper">
       <div class="table-container">
         <el-table
@@ -19,11 +21,11 @@
             :width="column.width"
             :show-overflow-tooltip="true"
           >
-          <template #header>
-            <div class="header-container">
-    <span class="column-name">{{ column.COLUMN_NAME }}</span>
-            </div>
-  </template>
+            <template #header>
+              <div class="header-container">
+                <span class="column-name">{{ column.COLUMN_NAME }}</span>
+              </div>
+            </template>
             <template slot-scope="scope">
               <el-input
                 v-if="editingCell.row === scope.row && editingCell.column === column.COLUMN_NAME"
@@ -40,6 +42,7 @@
     <div class="button-group">
       <el-button type="primary" @click="saveChanges">保存</el-button>
       <el-button @click="goBack">返回</el-button>
+      <el-button type="primary" @click="showChangeStateDialog">修改表状态</el-button>
       <el-button type="primary" @click="showAddFieldDialog">添加字段</el-button>
       <el-button type="primary" @click="showdeletedialog">删除字段</el-button>
     </div>
@@ -65,12 +68,25 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="handlecancel_1">取消</el-button>
-        <el-button type="primary" @click="addField_1">确定</el-button>
+        <el-button type="primary" @click="deleteField">确定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog class="log" :visible.sync="changeStateDialogVisible" title="修改表状态">
+      <el-form :model="tableState">
+        <el-form-item label="表状态">
+          <el-radio-group v-model="tableState.per">
+            <el-radio :label="0">共享</el-radio>
+            <el-radio :label="1">非共享</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelChangeState">取消</el-button>
+        <el-button type="primary" @click="submitChangeState">确定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
-
 <script>
 export default {
   name: 'EditTable',
@@ -78,14 +94,16 @@ export default {
     tableName: {
       type: String,
       required: true
+    },
+    state: {
+      type: Boolean,
+      required: true
     }
+    
   },
   data() {
     return {
       tableData: [
-        { id: 1, name: 'Alice看过i机柜恶杰润份额日u房内', age: 20 },
-        { id: 2, name: 'Bob', age: 30 },
-        { id: 3, name: 'Charlie', age: 35 },
         { id: 1, name: 'Alice', age: 20 },
         { id: 2, name: 'Bob', age: 30 },
         { id: 3, name: 'Charlie', age: 35 },
@@ -99,35 +117,29 @@ export default {
       columns: [
         { COLUMN_NAME: 'id' },
         { COLUMN_NAME: 'name' },
-        { COLUMN_NAME: 'age' },
-        { COLUMN_NAME: 's' },
-        { COLUMN_NAME: 'n' },
-        { COLUMN_NAME: 'a' },
-        { COLUMN_NAME: 'na' },
-        { COLUMN_NAME: 'ag' },
-        { COLUMN_NAME: 'sx' },
-        { COLUMN_NAME: 'nx' },
-        { COLUMN_NAME: 'ax' }
+        { COLUMN_NAME: 'age' }
       ],
       editingCell: {},
       loading: true,
       addFieldDialogVisible: false,
-      deleteFieldDialogVisible:false,
-    newField: {
-      COLUMN_NAME: '',
-      type: ''
+      deleteFieldDialogVisible: false,
+      changeStateDialogVisible: false,
+      newField: {
+        COLUMN_NAME: '',
+        type: ''
+      },
+      deleteFieldNAME: '',
+      tableState: {
+      per: this.state ? 1 : 0
     },
-    deleteFieldNAME:'',
+      st:this.state ? 1 : 0
     };
   },
   methods: {
     fetchColumnData() {
-      // 使用静态测试数据填充表格内容
       this.$axios.get(`/modify_database/table_info?tableName=${this.tableName}`)
         .then(response => {
-          // 设置 columns 数据
           this.columns = response.data;
-          // 然后获取表数据
           this.fetchTableData();
         })
         .catch(error => {
@@ -135,10 +147,8 @@ export default {
         });
     },
     fetchTableData() {
-      // 使用 this.$axios 发送请求以获取表格数据
       this.$axios.get(`/modify_database/table_data?tableName=${this.tableName}`)
         .then(response => {
-          // 设置 tableData 数据
           this.tableData = response.data;
         })
         .catch(error => {
@@ -146,66 +156,96 @@ export default {
         });
     },
     showAddFieldDialog() {
-    this.addFieldDialogVisible = true;
-  },
-  showdeletedialog() {
-    this.deleteFieldDialogVisible = true;
-  },
-  handlecancel() {
-    this.newField.COLUMN_NAME = '';
-    this.newField.type = '';
-    this.addFieldDialogVisible = false;
-  },
-  handlecancel_1() {
-    this.deleteFieldNAME = '';
-    this.deleteFieldDialogVisible = false;
-  },
-  addField() {
-    if (this.newField.COLUMN_NAME && this.newField.type) {
-      // 添加新字段到列
-      this.columns.push({ COLUMN_NAME: this.newField.COLUMN_NAME });
-      
-      // 添加新字段到每一行数据
-      this.tableData.forEach(row => {
-        this.$set(row, this.newField.COLUMN_NAME, '');
-      });
-
-
-      // 保持对话框可见
       this.addFieldDialogVisible = true;
-    } else {
-      this.$message.error('请填写完整字段信息');
-    }
-    const params = new URLSearchParams({
-    tableName: this.tableName,
-    columnName: this.newField.COLUMN_NAME,
-    columnType: this.newField.type
-    
-  }).toString();
-      this.$axios.post(`/modify_database/add_field?${params}`)
-        .then(response => {
-          console.log('添加成功:', response.data);
-          this.$message.success('添加成功');
-          this.newField.COLUMN_NAME = '';
-          this.newField.type = '';
-        })
-        .catch(error => {
-          console.error('添加失败:', error);
-          console.log(params);
-          this.$message.error('添加失败');
+    },
+    showdeletedialog() {
+      this.deleteFieldDialogVisible = true;
+    },
+    showChangeStateDialog() {
+      this.changeStateDialogVisible = true;
+    },
+    handlecancel() {
+      this.newField.COLUMN_NAME = '';
+      this.newField.type = '';
+      this.addFieldDialogVisible = false;
+    },
+    handlecancel_1() {
+      this.deleteFieldNAME = '';
+      this.deleteFieldDialogVisible = false;
+    },
+    cancelChangeState() {
+      this.changeStateDialogVisible = false;
+    },
+    addField() {
+      if (this.newField.COLUMN_NAME && this.newField.type) {
+        this.columns.push({ COLUMN_NAME: this.newField.COLUMN_NAME });
+        this.tableData.forEach(row => {
+          this.$set(row, this.newField.COLUMN_NAME, '');
         });
-  },
+        this.addFieldDialogVisible = false;
+        const params = new URLSearchParams({
+          tableName: this.tableName,
+          columnName: this.newField.COLUMN_NAME,
+          columnType: this.newField.type
+        }).toString();
+        this.$axios.post(`/modify_database/add_field?${params}`)
+          .then(response => {
+            console.log('添加成功:', response.data);
+            this.$message.success('添加成功');
+            this.newField.COLUMN_NAME = '';
+            this.newField.type = '';
+          })
+          .catch(error => {
+            console.error('添加失败:', error);
+            this.$message.error('添加失败');
+          });
+      } else {
+        this.$message.error('请填写完整字段信息');
+      }
+    },
+    deleteField() {
+      if (this.deleteFieldNAME) {
+        const columnIndex = this.columns.findIndex(column => column.COLUMN_NAME === this.deleteFieldNAME);
+        if (columnIndex !== -1) {
+          const columnToDelete = this.columns[columnIndex].COLUMN_NAME;
+          this.columns.splice(columnIndex, 1);
+          this.tableData = this.tableData.map(row => {
+            const newRow = { ...row };
+            delete newRow[columnToDelete];
+            return newRow;
+          });
+          this.deleteFieldDialogVisible = false;
+          const params = new URLSearchParams({
+            tableName: this.tableName,
+            columnName: this.deleteFieldNAME
+          }).toString();
+          this.$axios.post(`/modify_database/remove_field?${params}`)
+            .then(() => {
+              this.$message.success('删除成功');
+            })
+            .catch(error => {
+              if (error.response && error.response.status === 400) {
+                this.$message.error('表格或字段不存在');
+              } else {
+                this.$message.error('删除失败');
+              }
+              console.error('删除失败:', error);
+            });
+        } else {
+          this.$message.error('未找到指定的列');
+        }
+      } else {
+        this.$message.error('请填写完整字段信息');
+      }
+    },
     handleCellClick(row, column) {
       this.editingCell = { row, column: column.property };
     },
     saveChanges() {
-      // 模拟保存逻辑
-      console.log('保存数据:', this.tableData);
       const payload = {
         name: this.tableName,
         fields: this.tableData
       };
-      console.log('Payload:', payload);
       this.$axios.post('/modify_database/update_data', payload)
         .then(response => {
           console.log('保存成功:', response.data);
@@ -219,52 +259,22 @@ export default {
     goBack() {
       this.$router.push({ name: 'SqlMainpage' });
     },
-    addField_1(){
-        if(this.deleteFieldNAME){
-            const columnIndex = this.columns.findIndex(column => column.COLUMN_NAME === this.deleteFieldNAME);
-    
-    // 如果找到列，删除列
-    if (columnIndex !== -1) {
-      // 获取要删除的列名
-      const columnToDelete = this.columns[columnIndex].COLUMN_NAME;
-
-      // 从 columns 数组中删除指定列
-      this.columns.splice(columnIndex, 1);
-
-      // 从 tableData 中删除相应字段
-      this.tableData = this.tableData.map(row => {
-        // 创建一个新的对象，不包括要删除的字段
-        const newRow = { ...row };
-        delete newRow[columnToDelete];
-        return newRow;
-      });
-
-    
-    } else {
-      this.$message.error('未找到指定的列');
-    }
-        }
-    else {
-      this.$message.error('请填写完整字段信息');
-    }
-    // 提示删除成功
-    const params = new URLSearchParams({
-      tableName: this.tableName,
-    columnName: this.deleteFieldNAME  
-  }).toString();
-    this.$axios.post(`/modify_database/remove_field?${params}`)
-    .then(() => { // 不使用 response 变量
-      this.$message.success('删除成功');
-    })
-    .catch(error => {
-      if (error.response && error.response.status === 400) {
-        this.$message.error('表格或字段不存在');
-      } else {
-        this.$message.error('删除失败');
-      }
-      console.error('删除失败:', error);
-    });
-
+    submitChangeState() {
+      const payload = {
+        tableName: this.tableName,
+        permission: this.tableState.per
+      };
+      this.$axios.post('/modify_database/change_state', payload)
+        .then(response => {
+          this.st=this.tableState.per;
+          console.log('状态修改成功:', response.data);
+          this.$message.success('状态修改成功');
+          this.changeStateDialogVisible = false;
+        })
+        .catch(error => {
+          console.error('状态修改失败:', error);
+          this.$message.error('状态修改失败');
+        });
     }
   },
   created() {
@@ -272,20 +282,17 @@ export default {
   }
 };
 </script>
-
 <style scoped>
-
-
 .table-wrapper {
   display: flex;
   justify-content: center;
-  overflow-x: auto; /* 添加水平滚动条 */
+  overflow-x: auto;
   overflow-y: auto;
   width: 100%;
 }
 
 .table-container {
-  width: fit-content; 
+  width: fit-content;
 }
 
 .button-group {
@@ -313,13 +320,15 @@ export default {
 .column-name {
   flex: 1;
   text-align: center;
-  line-height: 30px; /* 设置与按钮高度一致的行高 */
-  height: 30px; /* 确保高度与按钮一致 */
+  line-height: 30px;
+  height: 30px;
 }
 
 .delete-button {
   position: absolute;
   right: 10px;
 }
-
+.log{
+  top:100px;
+}
 </style>
