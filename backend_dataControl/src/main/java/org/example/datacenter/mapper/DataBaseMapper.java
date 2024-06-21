@@ -32,6 +32,6 @@ public interface DataBaseMapper {
     boolean getTablePermission(@Param("tableName") String tableName);
     List<TablePermissions> getAllTablePermission();
     Integer getTableId(@Param("tableName") String tableName); //从permissions表里面的到表格的id
-    void changeTableState(@Param("tableName") String tableName, @Param("permission") boolean permission);
+    void changeTableState(@Param("tableName") String tableName, @Param("permission") Integer permission);
 }
 

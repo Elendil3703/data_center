@@ -238,7 +238,7 @@ public class DataBaseService {
         dataBaseMapper.insertData(tableName, dataToInsert);
     }
 
-    public void changeTableState(String tableName, boolean permission) {
+    public void changeTableState(String tableName, Integer permission) {
         dataBaseMapper.changeTableState(tableName, permission);
     }
 

@@ -71,7 +71,7 @@ public class DataBaseController {
     @PostMapping("change_state")
     public void changeTableState(@RequestBody Map<String, Object> requestData) {
         String tableName = requestData.get("tableName").toString();
-        boolean permission = (boolean) requestData.get("permission");
+        Integer permission = (Integer) requestData.get("permission");
         dataBaseService.changeTableState(tableName, permission);
     }
 
