@@ -1,0 +1,2 @@
+使用前先填写 config.properties，严格按照给定格式填写
+其中 topic.id 字段指的是原数据表的主键字段

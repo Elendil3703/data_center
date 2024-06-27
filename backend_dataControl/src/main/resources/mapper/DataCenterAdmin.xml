@@ -3,17 +3,17 @@
 
     <!-- 通过名称查询 DataCenterAdmin -->
     <select id="findByName" resultType="org.example.datacenter.model.DataCenterAdmin">
-        SELECT * FROM DataCenterAdmin WHERE name = #{name}
+        SELECT * FROM data_center_admin WHERE name = #{name}
     </select>
 
     <!-- 检查特定用户名的用户是否存在 -->
     <select id="checkUserExistence" resultType="int">
-        SELECT COUNT(*) FROM DataCenterAdmin WHERE name = #{name}
+        SELECT COUNT(*) FROM data_center_admin WHERE name = #{name}
     </select>
 
     <!-- 通过 ID 获取 DataCenterAdmin -->
     <select id="getById" resultType="org.example.datacenter.model.DataCenterAdmin">
-        SELECT id, name, password FROM DataCenterAdmin WHERE id = #{id}
+        SELECT id, name, password FROM data_center_admin WHERE id = #{id}
     </select>
 
 </mapper>

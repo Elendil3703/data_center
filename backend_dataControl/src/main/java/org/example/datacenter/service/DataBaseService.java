@@ -177,6 +177,16 @@ public class DataBaseService {
         return dataBaseMapper.getTableData(tableName);
     }
 
+    public List<Map<String, Object>> filterTableData(String tableName, String columnName, String minValue, String maxValue) {
+        if (dataBaseMapper.tableExists(tableName) == 0) {
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
+        }
+        if (dataBaseMapper.columnExists(tableName, columnName) == 0) {
+            throw new IllegalArgumentException("Column " + columnName + " does not exist in table " + tableName);
+        }
+        return dataBaseMapper.filterTableData(tableName, columnName, minValue, maxValue);
+    }
+
     public void updateTableField(String tableName, String columnName, String columnValue, String primaryKey, String primaryKeyValue) {
         if (dataBaseMapper.tableExists(tableName) == 0) {
             throw new IllegalArgumentException("Table " + tableName + " does not exist");
@@ -216,6 +226,20 @@ public class DataBaseService {
                 dataBaseMapper.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
             }
         }
+    }
+
+    public void insertTableData(String tableName, Map<String, Object> dataToInsert) {
+        if (dataBaseMapper.tableExists(tableName) == 0) {
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
+        }
+        if(dataToInsert.isEmpty()){
+            throw new BadRequestException("Empty data row provided");
+        }
+        dataBaseMapper.insertData(tableName, dataToInsert);
+    }
+
+    public void changeTableState(String tableName, Integer permission) {
+        dataBaseMapper.changeTableState(tableName, permission);
     }
 
 }

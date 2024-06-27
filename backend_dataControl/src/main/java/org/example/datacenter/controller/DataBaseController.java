@@ -1,7 +1,5 @@
 package org.example.datacenter.controller;
-import org.example.datacenter.model.CreateTableRequest;
-import org.example.datacenter.model.TablePermissionResponse;
-import org.example.datacenter.model.TablePermissions;
+import org.example.datacenter.model.*;
 import org.example.datacenter.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +43,19 @@ public class DataBaseController {
         return dataBaseService.getTableData(tableName);
     }
 
+    @PostMapping("/filter")
+    public List<Map<String, Object>> filterTableData(@RequestBody FilterDataWrapper wrapper) {
+        FilterDataRequest params = wrapper.getParams();
+        return dataBaseService.filterTableData(params.getTableName(), params.getColumnName(), params.getMinValue(), params.getMaxValue());
+    }
+
+    @PostMapping("/insert")
+    public void insertTableData(@RequestBody Map<String, Object> requestData){
+        String tableName = requestData.get("name").toString();
+        Map<String, Object> dataToInsert = (Map<String, Object>) requestData.get("row");
+        dataBaseService.insertTableData(tableName, dataToInsert);
+    }
+
     @PostMapping("/update_field")
     public void updateTableField(@RequestParam String tableName, @RequestParam String columnName, @RequestParam String columnValue, @RequestParam String primaryKey, @RequestParam String primaryKeyValue) {
         dataBaseService.updateTableField(tableName, columnName, columnValue, primaryKey, primaryKeyValue);
@@ -55,6 +66,13 @@ public class DataBaseController {
             String tableName = requestData.get("name").toString();
             List<Map<String, Object>> dataToUpdate = (List<Map<String, Object>>) requestData.get("fields");
             dataBaseService.updateTableData(tableName, dataToUpdate);
+    }
+
+    @PostMapping("change_state")
+    public void changeTableState(@RequestBody Map<String, Object> requestData) {
+        String tableName = requestData.get("tableName").toString();
+        Integer permission = (Integer) requestData.get("permission");
+        dataBaseService.changeTableState(tableName, permission);
     }
 
 }
