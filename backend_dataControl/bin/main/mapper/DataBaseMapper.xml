@@ -33,7 +33,7 @@
     </select>
 
     <select id="getAllTables" resultType="String">
-        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE()
+        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name NOT IN ('admin', 'DataCenterAdmin', 'table_permissions')
     </select>
 
     <select id="getTableInfo" resultType="java.util.Map">
@@ -50,4 +50,18 @@
         SET ${columnName} = #{columnValue}
         WHERE ${primaryKey} = #{primaryKeyValue}
     </update>
+
+    <select id="getTablePermission" resultType="boolean">
+        SELECT permission FROM table_permissions WHERE name = #{tableName}
+    </select>
+
+    <select id="getAllTablePermission" resultType="java.util.Map">
+        SELECT * FROM table_permissions
+    </select>
+
+    <select id="getTableId" resultType="int">
+        SELECT id FROM table_permissions WHERE name = #{tableName}
+    </select>
+
+
 </mapper>

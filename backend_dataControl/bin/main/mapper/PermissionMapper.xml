@@ -47,7 +47,7 @@
     <select id="getAdmins" resultType="org.example.datacenter.model.Admin">
         SELECT adminID, name, readable, writable, password
         FROM admin
-                 LIMIT #{limit} OFFSET #{offset}
+
     </select>
 
     <select id="getPasswordByName" resultType="string">
