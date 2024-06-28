@@ -107,29 +107,29 @@ services:
   #   #  - /data/fe/log/:/opt/apache-doris/fe/log/
   #   network_mode: host
 
-  # doris-be:
-  #   image: apache/doris:2.0.3-be-x86_64
-  #   hostname: "doris-be"
-  #   depends_on:
-  #     - doris-fe
-  #   environment:
-  #     - FE_SERVERS=fe1:127.0.0.1:9010
-  #     - BE_ADDR=127.0.0.1:9050
-  #     # - PRIORITY_NETWORKS=127.0.0.1
-  #     # - BE_PORT=9060       # Doris BE port
-  #     # - HTTP_PORT=8040     # Doris BE HTTP port
-  #     # - BRPC_PORT=8060     # Doris BE BRPC port
-  #   ports:
-  #     - "8040:8040"       # Expose HTTP port
-  #   #   # - "9050:9050"       # Expose BE_ADDR port
-  #   #   # - "9060:9060"       # Expose Doris BE port
-  #   #   # - "8060:8060"       # Expose BRPC port
-  #   volumes:
-  #     - ./limits.conf:/etc/security/limits.conf
-  #     - ./sysctl.conf:/etc/sysctl.conf
-  #     # - /data/be/storage/:/opt/apache-doris/be/storage/
-  #     # - /data/be/script/:/docker-entrypoint-initdb.d/
-  #   network_mode: host
+  doris-be:
+     image: apache/doris:2.0.3-be-x86_64
+     hostname: "doris-be"
+     depends_on:
+       - doris-fe
+     environment:
+       - FE_SERVERS=fe1:127.0.0.1:9010
+       - BE_ADDR=127.0.0.1:9050
+       # - PRIORITY_NETWORKS=127.0.0.1
+       # - BE_PORT=9060       # Doris BE port
+       # - HTTP_PORT=8040     # Doris BE HTTP port
+       # - BRPC_PORT=8060     # Doris BE BRPC port
+     ports:
+       - "8040:8040"       # Expose HTTP port
+     #   # - "9050:9050"       # Expose BE_ADDR port
+     #   # - "9060:9060"       # Expose Doris BE port
+     #   # - "8060:8060"       # Expose BRPC port
+     volumes:
+       - ./limits.conf:/etc/security/limits.conf
+       - ./sysctl.conf:/etc/sysctl.conf
+       # - /data/be/storage/:/opt/apache-doris/be/storage/
+       # - /data/be/script/:/docker-entrypoint-initdb.d/
+     network_mode: host
 
   # fe:
   #   image: apache/doris:2.0.0_alpha-fe-x86_64
