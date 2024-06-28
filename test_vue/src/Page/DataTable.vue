@@ -29,6 +29,36 @@
       <el-button @click="cancelFilter">取消筛选</el-button>
       <el-button @click="goBack">返回</el-button>
     </div>
+    <div class="filter-group">
+      <el-select v-model="filterForm.field" placeholder="选择字段">
+        <el-option v-for="column in columns" :key="column.COLUMN_NAME" :label="column.COLUMN_NAME" :value="column.COLUMN_NAME"></el-option>
+        <el-option label="全部字段" value="全部字段"></el-option>
+      </el-select>
+      <el-input v-model="filterForm.value" placeholder="输入查询值" style="width: 200px;"></el-input>
+      <el-radio-group v-model="filterForm.pattern">
+        <div class="radio-group">
+        <el-radio :label="true">精确匹配</el-radio>
+        <el-radio :label="false">模糊匹配</el-radio>
+        </div>
+      </el-radio-group>
+      <el-button type="primary" @click="applyFilter">确认</el-button>
+    </div>
+    <div class="aggregation-group">
+      <el-select v-model="aggregationForm.field" placeholder="选择字段">
+        <el-option v-for="column in columns" :key="column.COLUMN_NAME" :label="column.COLUMN_NAME" :value="column.COLUMN_NAME"></el-option>
+      </el-select>
+      <el-select v-model="aggregationForm.aggregationType" placeholder="选择聚合类型">
+        <el-option label="COUNT" value="COUNT"></el-option>
+        <el-option label="SUM" value="SUM"></el-option>
+        <el-option label="AVG" value="AVG"></el-option>
+        <el-option label="MAX" value="MAX"></el-option>
+        <el-option label="MIN" value="MIN"></el-option>
+      </el-select>
+      <el-select v-model="aggregationForm.groupBy" placeholder="选择分组字段">
+        <el-option v-for="column in columns" :key="column.COLUMN_NAME" :label="column.COLUMN_NAME" :value="column.COLUMN_NAME"></el-option>
+      </el-select>
+      <el-button type="primary" @click="applyAggregation">确认</el-button>
+    </div>
     <el-dialog title="新增数据" :visible.sync="addRowDialogVisible">
       <el-form :model="newRow">
         <el-form-item v-for="column in sortedColumns" :key="column.COLUMN_NAME" :label="column.COLUMN_NAME">
@@ -71,47 +101,43 @@ export default {
   data() {
     return {
       tableData: [
-  { id: 1, name: 'Alice', age: 20, email: 'alice@example.com' },
-  { id: 2, name: 'Bob', age: 30, email: 'bob@example.com' },
-  { id: 3, name: 'Charlie', age: 35, email: 'charlie@example.com' },
-  { id: 4, name: 'David', age: 25, email: 'david@example.com' },
-  { id: 5, name: 'Eve', age: 28, email: 'eve@example.com' },
-  { id: 1, name: 'Alice', age: 20, email: 'alice@example.com' },
-  { id: 2, name: 'Bob', age: 30, email: 'bob@example.com' },
-  { id: 3, name: 'Charlie', age: 35, email: 'charlie@example.com' },
-  { id: 4, name: 'David', age: 25, email: 'david@example.com' },
-  { id: 5, name: 'Eve', age: 28, email: 'eve@example.com' }
-]
-,
-columns: [
-  { COLUMN_NAME: 'id', COLUMN_KEY: '', width: 60 },
-  { COLUMN_NAME: 'name', COLUMN_KEY: 'PRI', width: 100 },
-  { COLUMN_NAME: 'age', COLUMN_KEY: '', width: 60 },
-  { COLUMN_NAME: 'email', COLUMN_KEY: '', width: 200 }
-]
-,
+        { id: 1, name: 'Alice', age: 20, email: 'alice@example.com' },
+        { id: 2, name: 'Bob', age: 30, email: 'bob@example.com' },
+        { id: 3, name: 'Charlie', age: 35, email: 'charlie@example.com' },
+        { id: 4, name: 'David', age: 25, email: 'david@example.com' },
+        { id: 5, name: 'Eve', age: 28, email: 'eve@example.com' }
+      ],
+      columns: [
+        { COLUMN_NAME: 'id', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'name', COLUMN_KEY: 'PRI', width: 100 },
+        { COLUMN_NAME: 'age', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'email', COLUMN_KEY: '', width: 200 }
+      ],
       filterDialogVisible: false,
       addRowDialogVisible: false,
       filterForm: {
-        columnName: '',
-        minValue: '',
-        maxValue: ''
+        field: '',
+        value: '',
+        pattern: true
+      },
+      aggregationForm: {
+        field: '',
+        aggregationType: '',
+        groupBy: ''
       },
       newRow: {}
     };
   },
   computed: {
-  sortedColumns() {
-    // 创建 columns 数组的副本
-    let columnsCopy = [...this.columns];
-    // 对副本进行排序
-    return columnsCopy.sort((a, b) => {
-      if (a.COLUMN_KEY === 'PRI') return -1;
-      if (b.COLUMN_KEY === 'PRI') return 1;
-      return 0;
-    });
-  }
-},
+    sortedColumns() {
+      let columnsCopy = [...this.columns];
+      return columnsCopy.sort((a, b) => {
+        if (a.COLUMN_KEY === 'PRI') return -1;
+        if (b.COLUMN_KEY === 'PRI') return 1;
+        return 0;
+      });
+    }
+  },
   methods: {
     fetchColumnData() {
       this.$axios.get(`/modify_database/table_info?tableName=${this.tableName}`)
@@ -133,7 +159,6 @@ columns: [
         });
     },
     showAddRowDialog() {
-      // 初始化 newRow 对象
       this.newRow = {};
       this.sortedColumns.forEach(column => {
         this.$set(this.newRow, column.COLUMN_NAME, '');
@@ -150,38 +175,53 @@ columns: [
       this.filterDialogVisible = true;
     },
     applyFilter() {
-      const { columnName, minValue, maxValue } = this.filterForm;
-      this.$axios.post('/modify_database/filter', {
-        params: {
-          tableName: this.tableName,
-          columnName,
-          minValue,
-          maxValue
-        }
-      })
-      .then(response => {
-        this.tableData = response.data;
-        this.filterDialogVisible = false;
-      })
-      .catch(error => {
-        console.error('筛选表格数据失败:', error);
-      });
+  const { field, value, pattern } = this.filterForm;
+  const params = field === '全部字段'
+    ? { index: `data_center_${this.tableName}`, value, pattern }
+    : { table: `data_center_${this.tableName}`, field, value, pattern };
+
+  const url = field === '全部字段'
+    ? 'http://localhost:18888/api/es/query'
+    : 'http://localhost:18888/api/doris/query';
+
+  this.$axios.get(url, { params })
+    .then(response => {
+      this.tableData = response.data;
+    })
+    .catch(error => {
+      console.error('筛选表格数据失败:', error);
+    });
+},
+    applyAggregation() {
+      const { field, aggregationType, groupBy } = this.aggregationForm;
+      const params = {
+        table: `data_center_${this.tableName}`,
+        field,
+        aggregationType,
+        groupBy
+      };
+
+      this.$axios.get('http://localhost:18888/api/doris/aggregate', { params })
+        .then(response => {
+          this.tableData = response.data;
+        })
+        .catch(error => {
+          console.error('聚合操作失败:', error);
+        });
     },
     cancelFilter() {
       this.fetchTableData();
     },
     submitNewRow() {
-      // 将新行数据添加到 tableData 中
       const payload = {
         name: this.tableName,
         row: this.newRow
       };
-      console.log('Payload:', payload);
       this.$axios.post('/modify_database/insert', payload)
         .then(response => {
           console.log('提交成功:', response.data);
           this.$message.success('提交成功');
-          this.tableData.push({...this.newRow} );
+          this.tableData.push({ ...this.newRow });
         })
         .catch(error => {
           console.error('提交失败:', error);
@@ -217,6 +257,14 @@ columns: [
   margin: 20px auto;
 }
 
+.filter-group, .aggregation-group {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .el-table {
   margin-top: 20px;
 }
@@ -224,9 +272,16 @@ columns: [
 .el-button {
   margin-right: 10px;
 }
+
 .detail-container {
   height: calc(100vh - 40px);
   padding: 20px;
   box-sizing: border-box;
 }
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 </style>
