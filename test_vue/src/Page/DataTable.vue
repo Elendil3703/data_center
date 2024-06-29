@@ -178,7 +178,7 @@ export default {
   const { field, value, pattern } = this.filterForm;
   const params = field === '全部字段'
     ? { index: `data_center_${this.tableName}`, value, pattern }
-    : { table: `data_center_${this.tableName}`, field, value, pattern };
+    : { table: `data_center.${this.tableName}`, field, value, pattern };
 
   const url = field === '全部字段'
     ? 'http://localhost:18888/api/es/query'
@@ -195,7 +195,7 @@ export default {
     applyAggregation() {
       const { field, aggregationType, groupBy } = this.aggregationForm;
       const params = {
-        table: `data_center_${this.tableName}`,
+        table: `data_center.${this.tableName}`,
         field,
         aggregationType,
         groupBy
