@@ -10,5 +10,8 @@
         <module name="org.example.data_center.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="org.example.data_center.test" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

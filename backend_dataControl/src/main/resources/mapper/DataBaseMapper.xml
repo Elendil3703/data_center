@@ -88,4 +88,9 @@
         WHERE name = #{tableName}
     </update>
 
+    <delete id="deleteRow">
+        DELETE FROM ${tableName}
+        WHERE ${primaryKey} = #{primaryKeyValue}
+    </delete>
+
 </mapper>

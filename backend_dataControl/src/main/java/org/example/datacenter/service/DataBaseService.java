@@ -242,4 +242,10 @@ public class DataBaseService {
         dataBaseMapper.changeTableState(tableName, permission);
     }
 
+    public void deleteRow(String tableName, String primaryKey, String primaryKeyValue) {
+        if (dataBaseMapper.tableExists(tableName) == 0) {
+            throw new IllegalArgumentException("Table " + tableName + " does not exist");
+        }
+        dataBaseMapper.deleteRow(tableName, primaryKey, primaryKeyValue);
+    }
 }
