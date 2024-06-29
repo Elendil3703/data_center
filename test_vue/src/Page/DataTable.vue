@@ -37,8 +37,8 @@
       <el-input v-model="filterForm.value" placeholder="输入查询值" style="width: 200px;"></el-input>
       <el-radio-group v-model="filterForm.pattern">
         <div class="radio-group">
-        <el-radio :label="true">精确匹配</el-radio>
-        <el-radio :label="false">模糊匹配</el-radio>
+          <el-radio :label="true">精确匹配</el-radio>
+          <el-radio :label="false">模糊匹配</el-radio>
         </div>
       </el-radio-group>
       <el-button type="primary" @click="applyFilter">确认</el-button>
@@ -58,6 +58,7 @@
         <el-option v-for="column in columns" :key="column.COLUMN_NAME" :label="column.COLUMN_NAME" :value="column.COLUMN_NAME"></el-option>
       </el-select>
       <el-button type="primary" @click="applyAggregation">确认</el-button>
+      <el-button @click="cancelAggregation">取消</el-button>
     </div>
     <el-dialog title="新增数据" :visible.sync="addRowDialogVisible">
       <el-form :model="newRow">
@@ -105,9 +106,22 @@ export default {
         { id: 2, name: 'Bob', age: 30, email: 'bob@example.com' },
         { id: 3, name: 'Charlie', age: 35, email: 'charlie@example.com' },
         { id: 4, name: 'David', age: 25, email: 'david@example.com' },
+        { id: 5, name: 'Eve', age: 28, email: 'eve@example.com' },
+        { id: 1, name: 'Alice', age: 20, email: 'alice@example.com' },
+        { id: 2, name: 'Bob', age: 30, email: 'bob@example.com' },
+        { id: 3, name: 'Charlie', age: 35, email: 'charlie@example.com' },
+        { id: 4, name: 'David', age: 25, email: 'david@example.com' },
         { id: 5, name: 'Eve', age: 28, email: 'eve@example.com' }
       ],
       columns: [
+        { COLUMN_NAME: 'id', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'name', COLUMN_KEY: 'PRI', width: 100 },
+        { COLUMN_NAME: 'age', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'email', COLUMN_KEY: '', width: 200 },
+        { COLUMN_NAME: 'id', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'name', COLUMN_KEY: 'PRI', width: 100 },
+        { COLUMN_NAME: 'age', COLUMN_KEY: '', width: 60 },
+        { COLUMN_NAME: 'email', COLUMN_KEY: '', width: 200 },
         { COLUMN_NAME: 'id', COLUMN_KEY: '', width: 60 },
         { COLUMN_NAME: 'name', COLUMN_KEY: 'PRI', width: 100 },
         { COLUMN_NAME: 'age', COLUMN_KEY: '', width: 60 },
@@ -175,23 +189,23 @@ export default {
       this.filterDialogVisible = true;
     },
     applyFilter() {
-  const { field, value, pattern } = this.filterForm;
-  const params = field === '全部字段'
-    ? { index: `data_center_${this.tableName}`, value, pattern }
-    : { table: `data_center.${this.tableName}`, field, value, pattern };
+      const { field, value, pattern } = this.filterForm;
+      const params = field === '全部字段'
+        ? { index: `data_center_${this.tableName}`, value, pattern }
+        : { table: `data_center.${this.tableName}`, field, value, pattern };
 
-  const url = field === '全部字段'
-    ? 'http://localhost:18888/api/es/query'
-    : 'http://localhost:18888/api/doris/query';
+      const url = field === '全部字段'
+        ? 'http://localhost:18888/api/es/query'
+        : 'http://localhost:18888/api/doris/query';
 
-  this.$axios.get(url, { params })
-    .then(response => {
-      this.tableData = response.data;
-    })
-    .catch(error => {
-      console.error('筛选表格数据失败:', error);
-    });
-},
+      this.$axios.get(url, { params })
+        .then(response => {
+          this.tableData = response.data;
+        })
+        .catch(error => {
+          console.error('筛选表格数据失败:', error);
+        });
+    },
     applyAggregation() {
       const { field, aggregationType, groupBy } = this.aggregationForm;
       const params = {
@@ -204,6 +218,10 @@ export default {
       this.$axios.get('http://localhost:18888/api/doris/aggregate', { params })
         .then(response => {
           this.tableData = response.data;
+          this.columns = [
+            { COLUMN_NAME: groupBy, COLUMN_KEY: '', width: 200 },
+            { COLUMN_NAME: 'result', COLUMN_KEY: '', width: 200 }
+          ];
         })
         .catch(error => {
           console.error('聚合操作失败:', error);
@@ -211,6 +229,9 @@ export default {
     },
     cancelFilter() {
       this.fetchTableData();
+    },
+    cancelAggregation() {
+      this.fetchColumnData();
     },
     submitNewRow() {
       const payload = {
@@ -278,10 +299,10 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
+
 .radio-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
 </style>
