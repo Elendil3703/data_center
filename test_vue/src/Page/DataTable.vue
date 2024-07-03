@@ -85,7 +85,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="filterDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="applyFilter">确认</el-button>
+        <el-button type="primary" @click="applyFilter2">确认</el-button>
       </div>
     </el-dialog>
   </div>
@@ -205,6 +205,24 @@ export default {
         .catch(error => {
           console.error('筛选表格数据失败:', error);
         });
+    },
+    applyFilter2() {
+      const { columnName, minValue, maxValue } = this.filterForm;
+      this.$axios.post('/modify_database/filter', {
+        params: {
+          tableName: this.tableName,
+          columnName,
+          minValue,
+          maxValue
+        }
+      })
+      .then(response => {
+        this.tableData = response.data;
+        this.filterDialogVisible = false;
+      })
+      .catch(error => {
+        console.error('筛选表格数据失败:', error);
+      });
     },
     applyAggregation() {
       const { field, aggregationType, groupBy } = this.aggregationForm;
