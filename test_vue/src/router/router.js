@@ -14,7 +14,6 @@ import AddAuthor from '@/Page/AddAuthor.vue';
 import DeleteAuthor from '@/Page/DeleteAuthor.vue';
 import EditTable from '@/Page/EditTable.vue';
 import LoginRoot from '@/Page/LoginRoot.vue';
-import MyTables from '@/Page/MyTables.vue';
 Vue.use(VueRouter);
 
 const routes = [
@@ -115,14 +114,7 @@ const routes = [
       }
     ]
   },
-  {
-    path:'/route-seven',
-    name:'MyTables',
-    component:MyTables,
-    meta:{
-      keepAlive:true
-    }
-  }
+  
   // 其他路由配置...
 ];
 
