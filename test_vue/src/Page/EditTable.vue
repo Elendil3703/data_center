@@ -2,7 +2,7 @@
   <div class="edit-table-container">
     <h2>表格名称：{{ tableName }}</h2>
     <span v-if="!st">（共享）</span>
-      <span v-else>（非共享）</span>
+    <span v-else>（非共享）</span>
     <div class="table-wrapper">
       <div class="table-container">
         <el-table
@@ -34,6 +34,15 @@
                 size="mini"
               />
               <span v-else>{{ scope.row[column.COLUMN_NAME] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            width="150"
+            align="center"
+          >
+            <template slot-scope="scope">
+              <el-button @click="deleteRow(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -87,6 +96,7 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 export default {
   name: 'EditTable',
@@ -99,23 +109,22 @@ export default {
       type: Boolean,
       required: true
     }
-    
   },
   data() {
     return {
       tableData: [
         { id: 1, name: 'Alice', age: 20 },
         { id: 2, name: 'Bob', age: 30 },
-        { id: 3, name: 'Charlie', age: 35 },
-        { id: 1, name: 'Alice', age: 20 },
-        { id: 2, name: 'Bob', age: 30 },
-        { id: 3, name: 'Charlie', age: 35 },
-        { id: 1, name: 'Alice', age: 20 },
-        { id: 2, name: 'Bob', age: 30 },
         { id: 3, name: 'Charlie', age: 35 }
       ],
       columns: [
-        { COLUMN_NAME: 'id' },
+        { COLUMN_NAME: 'id', COLUMN_KEY: 'PRI' },
+        { COLUMN_NAME: 'name' },
+        { COLUMN_NAME: 'age' },
+        { COLUMN_NAME: 'id', COLUMN_KEY: 'PRI' },
+        { COLUMN_NAME: 'name' },
+        { COLUMN_NAME: 'age' },
+        { COLUMN_NAME: 'id', COLUMN_KEY: 'PRI' },
         { COLUMN_NAME: 'name' },
         { COLUMN_NAME: 'age' }
       ],
@@ -130,9 +139,9 @@ export default {
       },
       deleteFieldNAME: '',
       tableState: {
-      per: this.state ? 1 : 0
-    },
-      st:this.state ? 1 : 0
+        per: this.state ? 1 : 0
+      },
+      st: this.state ? 1 : 0
     };
   },
   methods: {
@@ -266,7 +275,7 @@ export default {
       };
       this.$axios.post('/modify_database/change_state', payload)
         .then(response => {
-          this.st=this.tableState.per;
+          this.st = this.tableState.per;
           console.log('状态修改成功:', response.data);
           this.$message.success('状态修改成功');
           this.changeStateDialogVisible = false;
@@ -275,6 +284,29 @@ export default {
           console.error('状态修改失败:', error);
           this.$message.error('状态修改失败');
         });
+    },
+    deleteRow(row) {
+      const primaryKeyColumn = this.columns.find(column => column.COLUMN_KEY === 'PRI');
+      if (primaryKeyColumn) {
+        const primaryKeyValue = row[primaryKeyColumn.COLUMN_NAME];
+        const payload = {
+          tableName: this.tableName,
+          primaryKey: primaryKeyColumn.COLUMN_NAME,
+          primaryKeyValue: primaryKeyValue
+        };
+        //this.tableData = this.tableData.filter(item => item[primaryKeyColumn.COLUMN_NAME] !== primaryKeyValue);
+        this.$axios.post('/modify_database/delete_row', payload)
+          .then(() => {
+            this.tableData = this.tableData.filter(item => item[primaryKeyColumn.COLUMN_NAME] !== primaryKeyValue);
+            this.$message.success('删除成功');
+          })
+          .catch(error => {
+            console.error('删除失败:', error);
+            this.$message.error('删除失败');
+          });
+      } else {
+        this.$message.error('未找到主键列');
+      }
     }
   },
   created() {
@@ -282,6 +314,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 .table-wrapper {
   display: flex;
@@ -310,6 +343,7 @@ export default {
 .el-button {
   margin-right: 10px;
 }
+
 .header-container {
   display: flex;
   align-items: center;
@@ -328,7 +362,8 @@ export default {
   position: absolute;
   right: 10px;
 }
-.log{
-  top:100px;
+
+.log {
+  top: 100px;
 }
 </style>

@@ -74,5 +74,11 @@ public class DataBaseController {
         Integer permission = (Integer) requestData.get("permission");
         dataBaseService.changeTableState(tableName, permission);
     }
-
+    @PostMapping("delete_row")
+    public void deleteRow(@RequestBody Map<String, Object> requestData) {
+        String tableName = requestData.get("tableName").toString();
+        String primaryKey = requestData.get("primaryKey").toString();
+        String primaryKeyValue = requestData.get("primaryKeyValue").toString();
+        dataBaseService.deleteRow(tableName, primaryKey, primaryKeyValue);
+    }
 }

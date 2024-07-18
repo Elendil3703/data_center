@@ -33,5 +33,6 @@ public interface DataBaseMapper {
     List<TablePermissions> getAllTablePermission();
     Integer getTableId(@Param("tableName") String tableName); //从permissions表里面的到表格的id
     void changeTableState(@Param("tableName") String tableName, @Param("permission") Integer permission);
+    void deleteRow(@Param("tableName") String tableName, @Param("primaryKey") String primaryKey, @Param("primaryKeyValue") String primaryKeyValue);
 }
 

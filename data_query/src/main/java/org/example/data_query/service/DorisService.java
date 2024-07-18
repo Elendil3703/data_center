@@ -189,19 +189,19 @@ public class DorisService {
         String baseQuery;
         switch (aggregationType.toLowerCase()) {
             case "count":
-                baseQuery = String.format("SELECT %s, COUNT(*) AS count_result FROM %s GROUP BY %s", groupByField, tableName, groupByField);
+                baseQuery = String.format("SELECT %s, COUNT(*) AS result FROM %s GROUP BY %s", groupByField, tableName, groupByField);
                 break;
             case "sum":
-                baseQuery = String.format("SELECT %s, SUM(%s) AS sum_result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
+                baseQuery = String.format("SELECT %s, SUM(%s) AS result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
                 break;
             case "avg":
-                baseQuery = String.format("SELECT %s, AVG(%s) AS avg_result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
+                baseQuery = String.format("SELECT %s, AVG(%s) AS result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
                 break;
             case "max":
-                baseQuery = String.format("SELECT %s, MAX(%s) AS max_result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
+                baseQuery = String.format("SELECT %s, MAX(%s) AS result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
                 break;
             case "min":
-                baseQuery = String.format("SELECT %s, MIN(%s) AS min_result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
+                baseQuery = String.format("SELECT %s, MIN(%s) AS result FROM %s GROUP BY %s", groupByField, field, tableName, groupByField);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported aggregation type: " + aggregationType);
