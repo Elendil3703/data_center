@@ -33,7 +33,7 @@
     </select>
 
     <select id="getAllTables" resultType="String">
-        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name NOT IN ('admin', 'DataCenterAdmin', 'table_permissions')
+        SELECT table_name FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name NOT IN ('admin', 'data_center_admin', 'table_permissions')
     </select>
 
     <select id="getTableInfo" resultType="java.util.Map">
@@ -43,6 +43,11 @@
 
     <select id="getTableData" resultType="java.util.Map">
         SELECT * FROM ${tableName}
+    </select>
+
+    <select id="filterTableData" resultType="java.util.Map">
+        SELECT * FROM ${tableName}
+        WHERE ${columnName} BETWEEN #{minValue} AND #{maxValue}
     </select>
 
     <update id="updateTableField">
@@ -63,5 +68,29 @@
         SELECT id FROM table_permissions WHERE name = #{tableName}
     </select>
 
+    <insert id="insertData">
+        INSERT INTO ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach item="key" index="column" collection="data">
+                ${column},
+            </foreach>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <foreach item="value" index="column" collection="data">
+                #{value},
+            </foreach>
+        </trim>
+    </insert>
+
+    <update id="changeTableState">
+        UPDATE table_permissions
+        SET permission = #{permission}
+        WHERE name = #{tableName}
+    </update>
+
+    <delete id="deleteRow">
+        DELETE FROM ${tableName}
+        WHERE ${primaryKey} = #{primaryKeyValue}
+    </delete>
 
 </mapper>
